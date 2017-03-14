@@ -16,6 +16,23 @@ public class UserRole {
 	@Column(name="role")
 	private String role;
 
+	public UserRole(Long userroleid, Long userid, String role) {
+		this.userroleid = userroleid;
+		this.userid = userid;
+		this.role = role;
+	}
+	
+	public UserRole() {
+		
+	}
+	
+	public boolean isAdmin() {
+		if(role.equals("ROLE_ADMIN")) {
+			return true;
+		}
+		return false;
+	}
+
 	public Long getUserid() {
 		return userid;
 	}

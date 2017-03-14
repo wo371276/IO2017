@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Spring Security Example</title>
+    </head>
+    <body>
+    	<div th:replace="fragments/header :: header"> </div>
+        <p> <a th:href="@{/admin}">Panel administacyjny</a> </p>
+        <p> <a th:href="@{/admin/users/newUser}">Nowy użytkownik</a> </p>
+        <h1>Użytkownicy:</h1>
+        
+        <table border="1">
+      	<tr>
+	        <th>ID</th>
+	        <th>Login</th>
+	      </tr>
+	      <tr th:each="user : ${users}">
+	        <td th:text="${user.userId}"></td>
+	        <td th:text="${user.userName}"></td>
+	      </tr>
+	    </table>
+	    
+	    <h1>Administratorzy:</h1>
+        
+        <table border="1">
+      	<tr>
+	        <th>ID</th>
+	        <th>Login</th>
+	        <th>Edycja</th>
+	      </tr>
+	      <tr th:each="user : ${admins}">
+	        <td th:text="${user.userId}"></td>
+	        <td th:text="${user.userName}"></td>
+	        <td><a th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
+	      </tr>
+	    </table>
+        
+        <div th:replace="fragments/footer :: footer"> </div>
+
+    </body>
+</html>

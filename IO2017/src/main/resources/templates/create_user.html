@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Tworzenie nowego użytkownika</title>
+    </head>
+    <body>
+    	<div th:replace="fragments/header :: header"> </div>
+        <div id="container">
+     <form action="#" th:action="@{/admin/users/newUser/submit}" method="post">
+    	<p>Login: <input type="text" th:field="*{user.userName}" /></p>
+    	<p>Hasło: <input type="text" th:field="*{user.password}" /></p>
+        <p>Email: <input type="text" th:field="*{user.email}" /></p>
+        <input type="hidden" name="_roleAdmin" th:value="${roleAdmin}"/>
+	 	<p>Admin: <input type="checkbox" id="roleAdmin" name="roleAdmin" th:checked="${roleAdmin}" /></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+		 </div>
+        
+        
+        <div th:replace="fragments/footer :: footer"> </div>
+    </body>
+</html>
