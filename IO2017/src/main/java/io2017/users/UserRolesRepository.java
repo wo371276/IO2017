@@ -13,4 +13,7 @@ public interface UserRolesRepository extends CrudRepository<UserRole, Long> {
 	
 	@Query("select a.role from UserRole a where a.userid=?1")
 	public List<String> findRoleByUserId(long userid);
+	
+	@Query("select a.userroleid from UserRole a where a.userid=?1")
+	public List<Long> findRoleIdByUserId(long userid);
 }

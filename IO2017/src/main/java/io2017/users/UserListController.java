@@ -3,6 +3,7 @@ package io2017.users;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +36,12 @@ public class UserListController {
         model.addAttribute("users", users);
         model.addAttribute("admins", admins);
         
+
+        User me = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long myId= me.getUserId();
+
+        model.addAttribute("myId", myId);
+        
         return "admin_users";
     }
     
@@ -63,7 +70,7 @@ public class UserListController {
     public String saveUser(@ModelAttribute("user") User user, 
     						@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
     	
-    	//TODO userValidator i rejest values
+    	//TODO userValidator i reject values
     	user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
     	userRepository.save(user);
     	System.out.println(roleAdmin);
@@ -83,12 +90,8 @@ public class UserListController {
     						@RequestParam(value="newPassword", required = false) String newPassword,
     						@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
     	
-    	//TODO userValidator i rejest values
+    	//TODO userValidator i reject values
 
-
-    	
-    	
-    	
     	if(newPassword != null) {
     		user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
     	}
@@ -103,6 +106,22 @@ public class UserListController {
     	
     	userRepository.save(user);
     	System.out.println("saveEditedUser");
+    	return "redirect:" + "/admin/users";
+    }
+    
+    @RequestMapping("/admin/users/deleteUser")
+    public String deleteUser(Model model, @RequestParam("id") long id) {
+    	//TODO może dodać @join i @onetoone w encjach
+    	//albo poszukać czegoś innego
+    	/*
+    	User userToDelete = userRepository.findOne(id);
+    	Long deletedId = userToDelete.getUserId();
+    	
+    	Long roleIdToDelete = userRolesRepository.findRoleIdByUserId(deletedId).get(0);
+    	
+    	userRolesRepository.delete(roleIdToDelete);
+    	userRepository.delete(deletedId);
+    	*/
     	return "redirect:" + "/admin/users";
     }
 
