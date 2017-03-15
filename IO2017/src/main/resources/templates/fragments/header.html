@@ -2,13 +2,15 @@
 	<div style="margin-bottom: 10px; border: solid;">
    		This is the header of the application.
    		<div style="float: right;">
-   			<div sec:authorize="hasRole('ROLE_ADMIN')">
+   			<div style="display: inline; float: left; margin-right: 5px;" sec:authorize="hasRole('ROLE_ADMIN')">
    			<a th:href="@{/admin/users}">PANEL ADMINISTRACYJNY</a>
    			
    			</div>
+   			<div style="display: inline; float: left;">
    			 <form th:action="@{/logout}" method="post">
             <input type="submit" value="Wyloguj"/>
-        </form>
+        	</form>
+        	</div>
    		</div>
    	</div>
 </div>

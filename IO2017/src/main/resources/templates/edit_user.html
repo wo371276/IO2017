@@ -11,7 +11,7 @@
     	<p>Login: <input type="text" th:field="*{user.userName}" /></p>
     	<input type="hidden" th:field="*{user.userId}" />
     	<input type="hidden" th:field="*{user.password}" />
-    	<p>Nowe hasło: <input type="text" id="_newPassword" name="_newPassword" /> 
+    	<p>Nowe hasło: <input type="text" id="newPassword" name="newPassword" /> 
     		<span style="color:gray;"> (zostaw puste jak bez zmiany) </span> </p>
         <p>Email: <input type="text" th:field="*{user.email}" /></p>
         <input type="hidden" name="_roleAdmin" th:value="${roleAdmin}"/>

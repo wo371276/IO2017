@@ -5,9 +5,8 @@
     </head>
     <body>
     	<div th:replace="fragments/header :: header"> </div>
-        <h1>Welcome!</h1>
-
-        <p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
+        <h1>Witaj na stronie do nauki fiszek!</h1>
+        <a th:href="@{/login}">Tutaj można się zalogować</a>
         
         <div th:replace="fragments/footer :: footer"> </div>
     </body>

@@ -1,4 +1,4 @@
-package hello;
+package io2017;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +32,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/", "/home").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
+                .and()
+            .exceptionHandling().accessDeniedPage("/403")
                 .and()
             .formLogin()
                 .loginPage("/login")
@@ -40,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .and()
+                
             .logout()
                 .permitAll();
     }

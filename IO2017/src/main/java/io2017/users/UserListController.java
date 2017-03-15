@@ -2,16 +2,11 @@ package io2017.users;
 
 import java.util.List;
 
-import javax.websocket.Session;
-
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -79,7 +74,8 @@ public class UserListController {
     	}
     	
     	System.out.println("savedUser");
-    	return "admin_users";
+    	
+    	return "redirect:" + "/admin/users";
     }
     
     @RequestMapping("/admin/users/editUser/submit")
@@ -88,25 +84,26 @@ public class UserListController {
     						@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
     	
     	//TODO userValidator i rejest values
-    	//TODO to jeszcze nie dziala
-    	User editUser = userRepository.findOne(user.getUserId());
-    	editUser.setEmail(user.getEmail());
-    	editUser.setUserName(user.getUserName());
+
+
+    	
+    	
+    	
     	if(newPassword != null) {
-    		editUser.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+    		user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
     	}
-    	//userRepository.save(user);
     	
     	System.out.println(roleAdmin);
-    	/*
+    	
     	if(roleAdmin.equals("on")) {
     		userRolesRepository.save(new UserRole(null, user.getUserId(), "ROLE_ADMIN"));
     	} else {
     		userRolesRepository.save(new UserRole(null, user.getUserId(), "ROLE_USER"));
     	}
-    	*/
+    	
+    	userRepository.save(user);
     	System.out.println("saveEditedUser");
-    	return "admin_users";
+    	return "redirect:" + "/admin/users";
     }
 
 }

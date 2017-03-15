@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Spring Security Example</title>
+    </head>
+    <body>
+    	<div th:replace="fragments/header :: header"> </div>
+        <h1 style="color:red;">To jest strona błędu</h1>
+        <h3 th:text="${errorName}"> </h3>
+        <p th:text="${errorInfo}"></p>
+        <a th:href="@{/}">Przejdź na stronę główną</a>
+        <!-- wypisywanie wszystkich atrybutów dostępnych w thymeleaf
+        <table>
+		<tr th:each="var : ${#vars}">
+		    <td th:text="${var.key}"></td>
+		    <td th:text="${var.value}"></td>
+		</tr>
+		</table>
+		 -->
+        <div th:replace="fragments/footer :: footer"> </div>
+    </body>
+</html>
