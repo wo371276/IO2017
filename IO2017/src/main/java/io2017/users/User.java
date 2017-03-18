@@ -14,8 +14,14 @@ private static final long serialVersionUID = 1L;
 	@Column(name="userid")
 	private Long userId;
 
-	@Column(name = "username")
+	@Column(name = "username", unique = true)
 	private String userName;
+	
+	@Column(name = "name")
+	private String name;
+	
+	@Column(name = "surname")
+	private String surname;
 	
 	@Column(name = "password")
 	private String password;
@@ -23,16 +29,21 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "email")
 	private String email;
 	
-	public User(){
+	@Column(name = "enabled")
+	Boolean enabled;
 	
+	
+	public User(){
 	}
 	
 	public User(User user) {
         this.userId = user.userId;
         this.userName = user.userName;
         this.email = user.email;       
-        this.password = user.password;        
-}
+        this.password = user.password;
+        this.enabled = user.enabled;
+        //this.userRole = user.userRole;
+	}
 	
 	public Long getUserId() {
 		return userId;
@@ -65,4 +76,30 @@ private static final long serialVersionUID = 1L;
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+
 }

@@ -39,7 +39,7 @@ public class CustomUserDetails extends io2017.users.User implements UserDetails 
 	}
 	@Override
 	public boolean isEnabled() {
-	return true;
+		return this.getEnabled();
 	}
 	@Override
 	public String getUsername() {

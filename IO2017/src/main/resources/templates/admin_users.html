@@ -13,12 +13,21 @@
       	<tr>
 	        <th>ID</th>
 	        <th>Login</th>
+	       	<th>Imię</th>
+	        <th>Nazwisko</th>
+	        <th>Email</th>
+	        <th>Aktywny</th>
 	        <th>Edycja</th>
 	        <th>Usuń</th>
 	      </tr>
 	      <tr th:each="user : ${users}">
 	        <td th:text="${user.userId}"></td>
 	        <td th:text="${user.userName}"></td>
+    	    <td th:text="${user.name}"></td>
+	        <td th:text="${user.surname}"></td>
+	        <td th:text="${user.email}"></td>
+	        <td th:if="${user.enabled}"><p>Aktywny</p></td>
+ 			<td th:unless="${user.enabled}">Nieaktywny</td>
 	        <td><a th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
 	        <td><a th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a></td>
 	      </tr>
@@ -30,12 +39,21 @@
       	<tr>
 	        <th>ID</th>
 	        <th>Login</th>
+	        <th>Imię</th>
+	        <th>Nazwisko</th>
+	        <th>Email</th>
+	        <th>Aktywny</th>
 	        <th>Edycja</th>
 	        <th>Usuń</th>
 	      </tr>
 	      <tr th:each="user : ${admins}">
 	        <td th:text="${user.userId}"></td>
 	        <td th:text="${user.userName}"></td>
+	        <td th:text="${user.name}"></td>
+	        <td th:text="${user.surname}"></td>
+	        <td th:text="${user.email}"></td>
+	        <td th:if="${user.enabled}"><p>Aktywny</p></td>
+ 			<td th:unless="${user.enabled}">Nieaktywny</td>
 	        <td>
 	        	<a th:if="${myId} != ${user.userId}" th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a>
 	        	<!--  dla aktualnie zalogowanego admina -->
@@ -46,8 +64,6 @@
 	        	<!--  dla aktualnie zalogowanego admina -->
 	        	<span th:if="${myId} == ${user.userId}" th:href="@{/admin/users/deleteUser(id=${user.userId})}">To Ty</span>
 	        </td>
-	        
-	        <td></td>
 	        
 	      </tr>
 	    </table>

@@ -3,12 +3,14 @@
    		This is the header of the application.
    		<div style="float: right;">
    			<div style="display: inline; float: left; margin-right: 5px;" sec:authorize="hasRole('ROLE_ADMIN')">
-   			<a th:href="@{/admin/users}">PANEL ADMINISTRACYJNY</a>
+   			<a th:href="@{/admin}">PANEL ADMINISTRACYJNY</a>
    			
    			</div>
    			<div style="display: inline; float: left;">
    			 <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Wyloguj"/>
+   			 <div sec:authorize="isAuthenticated()">
+            	<input type="submit" value="Wyloguj"/>
+           	</div>
         	</form>
         	</div>
    		</div>

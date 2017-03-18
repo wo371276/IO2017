@@ -14,6 +14,10 @@
     	<p>Nowe hasło: <input type="text" id="newPassword" name="newPassword" /> 
     		<span style="color:gray;"> (zostaw puste jak bez zmiany) </span> </p>
         <p>Email: <input type="text" th:field="*{user.email}" /></p>
+        <p>Imię: <input type="text" th:field="*{user.name}" /></p>
+        <p>Nazwisko: <input type="text" th:field="*{user.surname}" /></p>
+        <input type="hidden" name="_enabled" th:value="${enabled}"/>
+	 	<p>Aktywny: <input type="checkbox" id="enabled" name="enabled" th:checked="${enabled}" /></p>
         <input type="hidden" name="_roleAdmin" th:value="${roleAdmin}"/>
 	 	<p>Admin: <input type="checkbox" id="roleAdmin" name="roleAdmin" th:checked="${roleAdmin}" /></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>

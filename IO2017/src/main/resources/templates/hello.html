@@ -2,18 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title>Hello World!</title>
+        <title>IO2017</title>
     </head>
     <body>
     	<div th:replace="fragments/header :: header"> </div>
-    	Logged user: <span sec:authentication="name">Bob</span>
-		Roles: <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>
+    	Użytkownik <span sec:authentication="name">Wojtek</span>
+		Typ użytkownika <span sec:authentication="principal.authorities">[ROLE_USER, ROLE_ADMIN]</span>
         <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
         <div sec:authorize="hasRole('ROLE_ADMIN')">
         	<p>Wiadomość tylko dla admina</p>
         </div>
         <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
+            <input type="submit" value="Wyloguj"/>
         </form>
         
         <div th:replace="fragments/footer :: footer"> </div>

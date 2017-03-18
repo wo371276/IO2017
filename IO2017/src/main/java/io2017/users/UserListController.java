@@ -61,17 +61,25 @@ public class UserListController {
     	model.addAttribute("user", editUser);
     	//System.out.println("id: " + id);
     	boolean isAdmin = userRolesRepository.findRoleByUserId(id).get(0).equals("ROLE_ADMIN");
+    	model.addAttribute("enabled", editUser.getEnabled());
     	model.addAttribute("roleAdmin", isAdmin);
     	
     	return "edit_user";
     }
     
     @RequestMapping("/admin/users/newUser/submit")
-    public String saveUser(@ModelAttribute("user") User user, 
+    public String saveUser( @ModelAttribute("user") User user, 
+    						@RequestParam(value="enabled", required = false, defaultValue = "off") String enabled,
     						@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
     	
     	//TODO userValidator i reject values
     	user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+
+    	if(enabled.equals("on")) {
+    		user.setEnabled(true);
+    	} else {
+    		user.setEnabled(false);
+    	}
     	userRepository.save(user);
     	System.out.println(roleAdmin);
     	if(roleAdmin.equals("on")) {
@@ -87,22 +95,32 @@ public class UserListController {
     
     @RequestMapping("/admin/users/editUser/submit")
     public String saveEditedUser(@ModelAttribute("user") User user, 
-    						@RequestParam(value="newPassword", required = false) String newPassword,
-    						@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
+    							@RequestParam(value="newPassword", required = false) String newPassword,
+    							@RequestParam(value="enabled", required = false, defaultValue = "off") String enabled,
+    							@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
     	
     	//TODO userValidator i reject values
 
-    	if(newPassword != null) {
+    	if(newPassword != null && newPassword.equals("") == false) {
     		user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
     	}
     	
     	System.out.println(roleAdmin);
     	
-    	if(roleAdmin.equals("on")) {
-    		userRolesRepository.save(new UserRole(null, user.getUserId(), "ROLE_ADMIN"));
+    	if(enabled.equals("on")) {
+    		user.setEnabled(true);
     	} else {
-    		userRolesRepository.save(new UserRole(null, user.getUserId(), "ROLE_USER"));
+    		user.setEnabled(false);
     	}
+    	UserRole userRole = userRolesRepository.findOne(
+    								userRolesRepository.findRoleIdByUserId(user.getUserId()).get(0));
+  
+    	if(roleAdmin.equals("on")) {
+    		userRole.setRole("ROLE_ADMIN");
+    	} else {
+    		userRole.setRole("ROLE_USER");
+    	}
+    	userRolesRepository.save(userRole);
     	
     	userRepository.save(user);
     	System.out.println("saveEditedUser");
@@ -111,17 +129,11 @@ public class UserListController {
     
     @RequestMapping("/admin/users/deleteUser")
     public String deleteUser(Model model, @RequestParam("id") long id) {
-    	//TODO może dodać @join i @onetoone w encjach
-    	//albo poszukać czegoś innego
-    	/*
-    	User userToDelete = userRepository.findOne(id);
-    	Long deletedId = userToDelete.getUserId();
+    	Long roleId = userRolesRepository.findRoleIdByUserId(id).get(0);
+    	UserRole userRole = userRolesRepository.findOne(roleId);
+    	userRolesRepository.delete(userRole);
+    	userRepository.delete(id);
     	
-    	Long roleIdToDelete = userRolesRepository.findRoleIdByUserId(deletedId).get(0);
-    	
-    	userRolesRepository.delete(roleIdToDelete);
-    	userRepository.delete(deletedId);
-    	*/
     	return "redirect:" + "/admin/users";
     }
 
