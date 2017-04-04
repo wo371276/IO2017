@@ -1,18 +1,33 @@
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
 <div th:fragment="header">
-	<div style="margin-bottom: 10px; border: solid;">
-   		This is the header of the application.
-   		<div style="float: right;">
-   			<div style="display: inline; float: left; margin-right: 5px;" sec:authorize="hasRole('ROLE_ADMIN')">
-   			<a th:href="@{/admin}">PANEL ADMINISTRACYJNY</a>
-   			
-   			</div>
-   			<div style="display: inline; float: left;">
-   			 <form th:action="@{/logout}" method="post">
-   			 <div sec:authorize="isAuthenticated()">
-            	<input type="submit" value="Wyloguj"/>
-           	</div>
-        	</form>
-        	</div>
-   		</div>
-   	</div>
+	<nav class="navbar navbar-fixed-top navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">WebSiteName</a>
+			</div>
+			<ul class="nav navbar-nav navbar-right" sec:authorize="!isAuthenticated()">
+				<li><a href="@{/login}">Zaloguj</a></li>
+				<li><a href="@{/register}">Rejestracja</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
+				<li>Imię</li> <!-- TODO: imię i nazwisko użytkownika -->
+				<li>Nazwisko</li>
+				<li> <p>
+				<form th:action="@{/logout}" method="post">
+				<button type="submit" class="btn btn-default">Wyloguj</button>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
+			<li> <a th:href="@{/admin}">Panel administracyjny</a> </li>
+			</ul>
+		</div>
+	</nav>
 </div>

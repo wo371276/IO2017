@@ -1,27 +1,67 @@
-
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Tworzenie nowego użytkownika</title>
-    </head>
-    <body>
-    	<div th:replace="fragments/header :: header"> </div>
-        <div id="container">
-     <form action="#" th:action="@{/admin/users/newUser/submit}" method="post">
-    	<p>Login: <input type="text" th:field="*{user.userName}" /></p>
-    	<p>Hasło: <input type="text" th:field="*{user.password}" /></p>
-        <p>Email: <input type="text" th:field="*{user.email}" /></p>
-        <p>Imię: <input type="text" th:field="*{user.name}" /></p>
-        <p>Nazwisko: <input type="text" th:field="*{user.surname}" /></p>
-        <input type="hidden" name="_enabled" th:value="${enabled}"/>
-	 	<p>Aktywny: <input type="checkbox" id="enabled" name="enabled" th:checked="${enabled}" /></p>
-        <input type="hidden" name="_roleAdmin" th:value="${roleAdmin}"/>
-	 	<p>Admin: <input type="checkbox" id="roleAdmin" name="roleAdmin" th:checked="${roleAdmin}" /></p>
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-    </form>
-		 </div>
-        
-        
-        <div th:replace="fragments/footer :: footer"> </div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Tworzenie nowego użytkownika</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div th:replace="fragments/header :: header"></div>
+	<div class="container">
+		<div class="row">
+			<div class="span4">
+				<form action="#" th:action="@{/admin/users/newUser/submit}"
+					method="post" class="form-horizontal">
+					<div class="form-group">
+						<label for="login">Login:</label> <input type="text"
+							th:field="*{user.userName}
+				class =" form-control" id="login">
+					</div>
+					<div class="form-group">
+						<label for="pwd">Hasło:</label> <input type="password"
+							th:field="*{user.password}
+				class=" form-control" id="pwd">
+					</div>
+					<div class="form-group">
+						<label for="email">Adres email:</label> <input type="email"
+							th:field="*{user.email} class=" form-control" id="email">
+					</div>
+					<div class="form-group">
+						<label for="imie">Imię:</label> <input type="text"
+							th:field="*{user.name}
+				class =" form-control" id="imie">
+					</div>
+					<div class="form-group">
+						<label for="nazwisko">Nazwisko:</label> <input type="text"
+							th:field="*{user.surname} 
+				name="
+							_enabled" th:value="${enabled} class ="
+							form-control" id="nazwisko">
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" id="enabled" name="enabled"
+							th:checked="${enabled}"> Aktywny</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" id="roleAdmin"
+							name="roleAdmin" th:checked="${roleAdmin}"> Admin</label>
+					</div>
+					<button type="submit" class="btn btn-default">Zatwierdź</button>
+					<button type="reset" class="btn btn-default">Resetuj</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div th:replace="fragments/footer :: footer"></div>
+</body>
 </html>
