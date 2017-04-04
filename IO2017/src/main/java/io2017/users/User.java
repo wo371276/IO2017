@@ -25,6 +25,7 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "password")
 	private String password;
+	private String matchingPassword;
 	
 	@Column(name = "email")
 	private String email;
@@ -67,6 +68,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getMatchingPassword() {
+		return matchingPassword;
+	}
+
+	public void seMatchingtPassword(String matchingPassword) {
+		this.matchingPassword = matchingPassword;
 	}
 
 	public String getEmail() {

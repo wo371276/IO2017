@@ -2,14 +2,21 @@ package io2017.users;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class UserListController {
@@ -136,5 +143,79 @@ public class UserListController {
     	
     	return "redirect:" + "/admin/users";
     }
+    
+    @RequestMapping("/register/new")
+    public String showRegistrationForm(WebRequest request, Model model) {
+        UserDto userDto = new UserDto();
+        model.addAttribute("userDto", userDto);
+        
+        return "register_new";
+    }
+    
+    @RequestMapping("/register/new/submit")
+    public ModelAndView registerUserAccount(
+    		
+    	@ModelAttribute("userDto") @Valid UserDto accountDto, 
+    	BindingResult result, 
+    	WebRequest request, 
+    	Errors errors) {
 
+        User registered = new User();
+        if (!result.hasErrors()) {
+            registered = createUserAccount(accountDto, result);
+        	registered.setPassword(new BCryptPasswordEncoder().encode(registered.getPassword()));
+        	userRepository.save(registered);
+        	userRolesRepository.save(new UserRole(null, registered.getUserId(), "ROLE_USER"));
+        	
+        	System.out.println("savedUser");
+        }
+    	
+        if (registered == null) {
+            result.rejectValue("email", "message.regError");
+        }
+        
+//    	return "home";
+
+        if (result.hasErrors()) {
+            return new ModelAndView("register_new", "userDto", accountDto);
+        } 
+        else {
+            return new ModelAndView("login");
+        }
+    }
+    
+    private User createUserAccount(UserDto accountDto, BindingResult result) {
+        try {
+            User registered = registerNewUserAccount(accountDto);
+            return registered;
+        } catch (EmailExistsException e) {
+            return null;
+        }
+    }
+    
+    public User registerNewUserAccount(UserDto accountDto) 
+    	      throws EmailExistsException {
+    	         
+    	        if (emailExist(accountDto.getEmail())) {   
+    	            throw new EmailExistsException(
+    	              "Istnieje już konto dla tego adresu mailowego: " + accountDto.getEmail());
+    	        }
+    	        User user = new User();    
+    	        user.setName(accountDto.getName());
+    	        user.setUserName(accountDto.getUsername());
+    	        user.setSurname(accountDto.getSurname());
+    	        user.setPassword(accountDto.getPassword());
+    	        user.setEmail(accountDto.getEmail());
+    	        user.setEnabled(true);
+    	        return user;
+//    	        return repository.save(user);      //TODO: email authorization 
+    	    }
+    	    
+    	    private boolean emailExist(String email) {
+    	        User user = userRepository.findByEmail(email);
+    	        if (user != null) {
+    	            return true;
+    	        }
+    	        return false;
+    	    }
 }
