@@ -4,61 +4,53 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Tworzenie nowego użytkownika</title>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="padding: 80px;">
 	<div th:replace="fragments/header :: header"></div>
-	<div class="container">
-		<div class="row">
-			<div class="span4">
-				<form action="#" th:action="@{/admin/users/newUser/submit}"
-					method="post" class="form-horizontal">
-					<div class="form-group">
-						<label for="login">Login:</label> <input type="text"
-							th:field="*{user.userName}"
-				class ="form-control" id="login"/>
-					</div>
-					<div class="form-group">
-						<label for="pwd">Hasło:</label> <input type="password"
-							th:field="*{user.password}"
-				class="form-control" id="pwd"/>
-					</div>
-					<div class="form-group">
-						<label for="email">Adres email:</label> <input type="email"
-							th:field="*{user.email}" class="form-control" id="email"/>
-					</div>
-					<div class="form-group">
-						<label for="imie">Imię:</label> <input type="text"
-							th:field="*{user.name}"
-				class ="form-control" id="imie"/>
-					</div>
-					<div class="form-group">
-						<label for="nazwisko">Nazwisko:</label> <input type="text"
-							th:field="*{user.surname}"
-				name="_enabled" th:value="${enabled}" class ="form-control" id="nazwisko"/>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox" id="enabled" name="enabled"
-							th:checked="${enabled}"/> Aktywny</label>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox" id="roleAdmin"
-							name="roleAdmin" th:checked="${roleAdmin}"/> Admin</label>
-					</div>
-					<button type="submit" class="btn btn-default">Zatwierdź</button>
-					<button type="reset" class="btn btn-default">Resetuj</button>
-				</form>
+	<div class="col-md-4 col-md-offset-4">
+		<form action="#" th:action="@{/admin/users/newUser/submit}"
+			method="post" class="form-horizontal">
+			<div class="form-group">
+				<label for="login">Login:</label> <input type="text"
+					th:field="*{user.userName}" class="form-control" id="login" />
 			</div>
-		</div>
+			<div class="form-group">
+				<label for="pwd">Hasło:</label> <input type="password"
+					th:field="*{user.password}" class="form-control" id="pwd" />
+			</div>
+			<div class="form-group">
+				<label for="email">Adres email:</label> <input type="email"
+					th:field="*{user.email}" class="form-control" id="email" />
+			</div>
+			<div class="form-group">
+				<label for="imie">Imię:</label> <input type="text"
+					th:field="*{user.name}" class="form-control" id="imie" />
+			</div>
+			<div class="form-group">
+				<label for="nazwisko">Nazwisko:</label> <input type="text"
+					th:field="*{user.surname}" name="_enabled" th:value="${enabled}"
+					class="form-control" id="nazwisko" />
+			</div>
+			<div class="checkbox">
+				<label><input type="checkbox" id="enabled" name="enabled"
+					th:checked="${enabled}" /> Aktywny</label>
+			</div>
+			<div class="checkbox">
+				<label><input type="checkbox" id="roleAdmin"
+					name="roleAdmin" th:checked="${roleAdmin}" /> Admin</label>
+			</div>
+			<button type="submit" class="btn btn-default">Zatwierdź</button>
+			<button type="reset" class="btn btn-default">Resetuj</button>
+		</form>
 	</div>
-
 
 	<div th:replace="fragments/footer :: footer"></div>
 </body>
