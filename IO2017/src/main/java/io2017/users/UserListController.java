@@ -13,10 +13,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
+
+import io2017.exceptions.EmailExistsException;
+import io2017.exceptions.UserExistsException;
 
 @Controller
 public class UserListController {
@@ -162,19 +164,22 @@ public class UserListController {
 
         User registered = new User();
         if (!result.hasErrors()) {
-            registered = createUserAccount(accountDto, result);
-        	registered.setPassword(new BCryptPasswordEncoder().encode(registered.getPassword()));
-        	userRepository.save(registered);
-        	userRolesRepository.save(new UserRole(null, registered.getUserId(), "ROLE_USER"));
+        	try {
+                registered = registerNewUserAccount(accountDto);
+                registered.setPassword(new BCryptPasswordEncoder().encode(registered.getPassword()));
+            	userRepository.save(registered);
+            	userRolesRepository.save(new UserRole(null, registered.getUserId(), "ROLE_USER"));
+            	
+            	System.out.println("savedUser");
+            } catch (EmailExistsException e) {
+                result.rejectValue("email", "message.regError", "Istnieje już konto dla adresu mailowego <" + accountDto.getEmail() + ">");
+            } catch (UserExistsException e) {
+                result.rejectValue("username", "message.regError", "Istnieje już użytkownik o loginie <" + accountDto.getUsername() + ">");
+			}
         	
-        	System.out.println("savedUser");
-        }
-    	
-        if (registered == null) {
-            result.rejectValue("email", "message.regError");
         }
         
-//    	return "home";
+    	System.out.println(result.getGlobalErrorCount());
 
         if (result.hasErrors()) {
             return new ModelAndView("register_new", "userDto", accountDto);
@@ -184,21 +189,13 @@ public class UserListController {
         }
     }
     
-    private User createUserAccount(UserDto accountDto, BindingResult result) {
-        try {
-            User registered = registerNewUserAccount(accountDto);
-            return registered;
-        } catch (EmailExistsException e) {
-            return null;
-        }
-    }
-    
-    public User registerNewUserAccount(UserDto accountDto) 
-    	      throws EmailExistsException {
-    	         
-    	        if (emailExist(accountDto.getEmail())) {   
-    	            throw new EmailExistsException(
-    	              "Istnieje już konto dla tego adresu mailowego: " + accountDto.getEmail());
+    private User registerNewUserAccount(UserDto accountDto) 
+    	      throws EmailExistsException, UserExistsException {
+		    	if (userRepository.findByUserName(accountDto.getUsername()) != null) {   
+		            throw new UserExistsException();
+		        }
+    	        if (userRepository.findByEmail(accountDto.getEmail()) != null) {   
+    	            throw new EmailExistsException();
     	        }
     	        User user = new User();    
     	        user.setName(accountDto.getName());
@@ -206,16 +203,7 @@ public class UserListController {
     	        user.setSurname(accountDto.getSurname());
     	        user.setPassword(accountDto.getPassword());
     	        user.setEmail(accountDto.getEmail());
-    	        user.setEnabled(true);
+    	        user.setEnabled(true); //TODO: authorization
     	        return user;
-//    	        return repository.save(user);      //TODO: email authorization 
-    	    }
-    	    
-    	    private boolean emailExist(String email) {
-    	        User user = userRepository.findByEmail(email);
-    	        if (user != null) {
-    	            return true;
-    	        }
-    	        return false;
     	    }
 }

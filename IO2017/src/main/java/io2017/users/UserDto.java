@@ -10,25 +10,28 @@ import io2017.validators.ValidEmail;
 public class UserDto {
 	
 	@NotNull
-    @NotEmpty
+    @NotEmpty(message="Pole nie może być puste")
     private String username;
 	
 	@NotNull
-    @NotEmpty
+    @NotEmpty(message="Pole nie może być puste")
     private String name;
      
     @NotNull
-    @NotEmpty
+    @NotEmpty(message="Pole nie może być puste")
     private String surname;
      
     @ValidEmail
     @NotNull
-    @NotEmpty
+    @NotEmpty(message="Pole nie może być puste")
     private String email;
     
     @NotNull
-    @NotEmpty
+    @NotEmpty(message="Pole nie może być puste")
     private String password;
+    
+    @NotNull
+    @NotEmpty(message="Pole nie może być puste")
     private String matchingPassword;
     
     public UserDto() {

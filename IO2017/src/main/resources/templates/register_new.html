@@ -62,59 +62,13 @@
 				<p th:each="error: ${#fields.errors('matchingPassword')}"
           th:text="${error}">Validation error</p>
 					</div>
+					<p th:each="error: ${#fields.errors()}"
+          th:text="${error}">Validation error</p> <!-- ten akapit podsumowuje wszystkie błędy -->
 					<button type="submit" class="btn btn-default">Zatwierdź</button>
 				</form>
 			</div>
 		</div>
 	</div>
-	<!-- <div class="container">
-		<div class="row">
-			<div class="span4">
-				<form action="#" th:action="@{/admin/users/newUser/submit}"
-					method="post" class="form-horizontal">
-					<div class="form-group">
-						<label for="login">Login:</label> <input type="text"
-							th:field="*{user.userName}"
-				class ="form-control" id="login"/>
-					</div>
-					<div class="form-group">
-						<label for="pwd">Hasło:</label> <input type="password"
-							th:field="*{user.password}"
-				class="form-control" id="pwd"/>
-					</div>
-					<div class="form-group">
-						<label for="pwd">Potwierdź hasło:</label> <input type="password"
-							th:field="*{user.matchingPassword}"
-				class="form-control" id="pwd"/>
-					</div>
-					<div class="form-group">
-						<label for="email">Adres email:</label> <input type="email"
-							th:field="*{user.email}" class="form-control" id="email"/>
-					</div>
-					<div class="form-group">
-						<label for="imie">Imię:</label> <input type="text"
-							th:field="*{user.name}"
-				class ="form-control" id="imie"/>
-					</div>
-					<div class="form-group">
-						<label for="nazwisko">Nazwisko:</label> <input type="text"
-							th:field="*{user.surname}"
-				name="_enabled" th:value="${enabled}" class ="form-control" id="nazwisko"/>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox" id="enabled" name="enabled"
-							th:checked="${enabled}"/> Aktywny</label>
-					</div>
-					<div class="checkbox">
-						<label><input type="checkbox" id="roleAdmin"
-							name="roleAdmin" th:checked="${roleAdmin}"/> Admin</label>
-					</div>
-					<button type="submit" class="btn btn-default">Zatwierdź</button>
-					<button type="reset" class="btn btn-default">Resetuj</button>
-				</form>
-			</div>
-		</div>
-	</div> -->
 	<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
