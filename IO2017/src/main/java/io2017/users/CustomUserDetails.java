@@ -43,6 +43,6 @@ public class CustomUserDetails extends io2017.users.User implements UserDetails 
 	}
 	@Override
 	public String getUsername() {
-		return super.getUserName();
+		return super.getEmail(); //TODO zastanwoic sie czemu jest null przy name & surname
 	}
 }

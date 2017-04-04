@@ -2,6 +2,8 @@ package io2017.users;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import io2017.exceptions.EmailExistsException;
 import io2017.exceptions.UserExistsException;
+import io2017.helpers.RegistrationHashHelper;
 
 @Controller
 public class UserListController {
@@ -206,4 +209,34 @@ public class UserListController {
     	        user.setEnabled(true); //TODO: authorization
     	        return user;
     	    }
+//confirmRegistration?code=
+    @RequestMapping("/confirmRegistration")
+    public String confirmRegistration(Model model, @RequestParam("code") String code) {
+    	RegistrationHashHelper hashHelper = new RegistrationHashHelper(code);
+    	if(hashHelper.isCorrectPattern()) {
+    		User user = (User) userRepository.findOne(hashHelper.getId());
+    		if(user != null) {
+    			String email = user.getEmail();
+    			try {
+    				String correctHash = hashHelper.makeSHA1Hash(email);
+        			if(correctHash.equals(hashHelper.getHashedEmail())) {
+        				user.setEnabled(true);
+        				userRepository.save(user);
+        				model.addAttribute("message", "Aktywacja się powiodła");
+        			} else {
+        				model.addAttribute("message", "Aktywacja się nie powiodła. Błedny link.");
+        			}
+    			} catch (Exception e) {
+    				e.getMessage();
+    			}
+    			
+    		} else {
+    			model.addAttribute("message", "Aktywacja się nie powiodła. Brak takiego użytkowniak.");
+    		}
+    	} else {
+    		model.addAttribute("message", "Aktywacja się nie powiodła. Błedny link.");
+    	}
+    	
+    	return "confirm_registration";
+    }
 }

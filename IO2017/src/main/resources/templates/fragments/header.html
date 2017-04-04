@@ -23,7 +23,11 @@
 				sec:authorize="isAuthenticated()">
 				<li sec:authorize="hasRole('ROLE_ADMIN')"><a
 					th:href="@{/admin}">Panel administracyjny</a></li>
-				<li><p class="navbar-text">Imię i nazwisko</p></li>
+				<li>
+					<p class="navbar-text">
+						<span sec:authentication="name"></span>
+					</p>
+				</li>
 				<li>
 					<form th:action="@{/logout}" method="post">
 						<button type="submit" class="btn btn-default navbar-btn">Wyloguj</button>
