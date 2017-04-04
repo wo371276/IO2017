@@ -4,19 +4,21 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Spring Security Example</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="resources/css/basic.css" />
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="padding: 80px;">
 	<div th:replace="fragments/header :: header"></div>
+	<div class="col-md-4 col-md-offset-4">
 	<h1>Witaj na stronie do nauki fiszek!</h1>
 	<a th:href="@{/login}">Tutaj można się zalogować</a>
-
+	</div>
 	<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

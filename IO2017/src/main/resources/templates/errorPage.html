@@ -1,22 +1,26 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Spring Security Example</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Spring Security Example</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    </head>
-    <body>
-    	<div th:replace="fragments/header :: header"> </div>
-        <h1>Wystąpił błąd</h1>
-        <h3 th:text="${errorName}"> </h3>
-        <p th:text="${errorInfo}"></p>
-        <a th:href="@{/}" class="btn btn-info" role="button">Przejdź na stronę główną</a>
-        <!-- wypisywanie wszystkich atrybutów dostępnych w thymeleaf
+</head>
+<body style="padding: 80px;">
+	<div th:replace="fragments/header :: header"></div>
+	<div class="col-md-4 col-md-offset-4">
+		<h1>Wystąpił błąd</h1>
+		<h3 th:text="${errorName}"></h3>
+		<p th:text="${errorInfo}"></p>
+		<a th:href="@{/}" class="btn btn-info" role="button">Przejdź na
+			stronę główną</a>
+		<!-- wypisywanie wszystkich atrybutów dostępnych w thymeleaf
         <table>
 		<tr th:each="var : ${#vars}">
 		    <td th:text="${var.key}"></td>
@@ -24,6 +28,7 @@
 		</tr>
 		</table>
 		 -->
-        <div th:replace="fragments/footer :: footer"> </div>
-    </body>
+	</div>
+	<div th:replace="fragments/footer :: footer"></div>
+</body>
 </html>

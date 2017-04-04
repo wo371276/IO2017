@@ -4,81 +4,83 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Spring Security Example</title>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="padding: 80px;">
 	<div th:replace="fragments/header :: header"></div>
-	<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel administracyjny</a>
-	<a th:href="@{/admin/users/newUser}" class="btn btn-default" role="button">Nowy użytkownik</a>
-	<h1>Użytkownicy:</h1>
-	<p>
-		My id: <span th:text="${myId}"></span>
-	</p>
-	<table class="table table-bordered">
-		<tr>
-			<th>ID</th>
-			<th>Login</th>
-			<th>Imię</th>
-			<th>Nazwisko</th>
-			<th>Email</th>
-			<th>Aktywny</th>
-			<th>Edycja</th>
-			<th>Usuń</th>
-		</tr>
-		<tr th:each="user : ${users}">
-			<td th:text="${user.userId}"></td>
-			<td th:text="${user.userName}"></td>
-			<td th:text="${user.name}"></td>
-			<td th:text="${user.surname}"></td>
-			<td th:text="${user.email}"></td>
-			<td th:if="${user.enabled}"><p>Aktywny</p></td>
-			<td th:unless="${user.enabled}">Nieaktywny</td>
-			<td><a th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
-			<td><a th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a></td>
-		</tr>
-	</table>
+	<div class="col-md-8 col-md-offset-2">
+		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
+			administracyjny</a> <a th:href="@{/admin/users/newUser}"
+			class="btn btn-default" role="button">Nowy użytkownik</a>
+		<h1>Użytkownicy:</h1>
+		<p>
+			My id: <span th:text="${myId}"></span>
+		</p>
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<th>Login</th>
+				<th>Imię</th>
+				<th>Nazwisko</th>
+				<th>Email</th>
+				<th>Aktywny</th>
+				<th>Edycja</th>
+				<th>Usuń</th>
+			</tr>
+			<tr th:each="user : ${users}">
+				<td th:text="${user.userId}"></td>
+				<td th:text="${user.userName}"></td>
+				<td th:text="${user.name}"></td>
+				<td th:text="${user.surname}"></td>
+				<td th:text="${user.email}"></td>
+				<td th:if="${user.enabled}"><p>Aktywny</p></td>
+				<td th:unless="${user.enabled}">Nieaktywny</td>
+				<td><a th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
+				<td><a th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a></td>
+			</tr>
+		</table>
 
-	<h1>Administratorzy:</h1>
+		<h1>Administratorzy:</h1>
 
-	<table class="table table-bordered">
-		<tr>
-			<th>ID</th>
-			<th>Login</th>
-			<th>Imię</th>
-			<th>Nazwisko</th>
-			<th>Email</th>
-			<th>Aktywny</th>
-			<th>Edycja</th>
-			<th>Usuń</th>
-		</tr>
-		<tr th:each="user : ${admins}">
-			<td th:text="${user.userId}"></td>
-			<td th:text="${user.userName}"></td>
-			<td th:text="${user.name}"></td>
-			<td th:text="${user.surname}"></td>
-			<td th:text="${user.email}"></td>
-			<td th:if="${user.enabled}"><p>Aktywny</p></td>
-			<td th:unless="${user.enabled}">Nieaktywny</td>
-			<td><a th:if="${myId} != ${user.userId}"
-				th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a> <!--  dla aktualnie zalogowanego admina -->
-				<a th:if="${myId} == ${user.userId}"
-				th:href="@{/admin/users/editUser(id=${user.userId})}">To Ty</a></td>
-			<td><a th:if="${myId} != ${user.userId}"
-				th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a> <!--  dla aktualnie zalogowanego admina -->
-				<span th:if="${myId} == ${user.userId}"
-				th:href="@{/admin/users/deleteUser(id=${user.userId})}">To Ty</span>
-			</td>
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<th>Login</th>
+				<th>Imię</th>
+				<th>Nazwisko</th>
+				<th>Email</th>
+				<th>Aktywny</th>
+				<th>Edycja</th>
+				<th>Usuń</th>
+			</tr>
+			<tr th:each="user : ${admins}">
+				<td th:text="${user.userId}"></td>
+				<td th:text="${user.userName}"></td>
+				<td th:text="${user.name}"></td>
+				<td th:text="${user.surname}"></td>
+				<td th:text="${user.email}"></td>
+				<td th:if="${user.enabled}"><p>Aktywny</p></td>
+				<td th:unless="${user.enabled}">Nieaktywny</td>
+				<td><a th:if="${myId} != ${user.userId}"
+					th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a> <!--  dla aktualnie zalogowanego admina -->
+					<a th:if="${myId} == ${user.userId}"
+					th:href="@{/admin/users/editUser(id=${user.userId})}">To Ty</a></td>
+				<td><a th:if="${myId} != ${user.userId}"
+					th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a> <!--  dla aktualnie zalogowanego admina -->
+					<span th:if="${myId} == ${user.userId}"
+					th:href="@{/admin/users/deleteUser(id=${user.userId})}">To
+						Ty</span></td>
 
-		</tr>
-	</table>
-
+			</tr>
+		</table>
+	</div>
 	<div th:replace="fragments/footer :: footer"></div>
 
 </body>
