@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Zarządzanie kategoriami</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body style="padding: 80px;">
+	<div th:replace="fragments/header :: header"></div>
+	<div class="col-md-8 col-md-offset-2">
+		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
+			administracyjny</a>
+		<a th:href="@{/admin/categories/newCategory}"
+			class="btn btn-default" role="button">Nowa kategoria</a>
+	
+		<h1>Kategorie:</h1>
+		
+		<table class="table table-bordered">
+			<tr>
+				<th>ID</th>
+				<th>Nazwa</th>
+				<th>Edycja</th>
+				<th>Usuń</th>
+			</tr>
+			<tr th:each="category : ${categories}">
+				<td th:text="${category.categoryId}"></td>
+				<td th:text="${category.name}"></td>
+				<td><a role="button" class="btn btn-warning"  th:href="@{/admin/categories/editCategory(id=${category.categoryId})}">Edytuj</a></td>
+				<td><a role="button" class="btn btn-danger" th:href="@{/admin/categories/deleteCategory(id=${category.categoryId})}">Usuń</a></td>
+				
+			</tr>
+		</table>
+
+	</div>
+	<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

@@ -29,3 +29,13 @@ INSERT INTO users VALUES(1, 'admin', 'Admin', 'Adminek', 'admin@test.com',
                     
 INSERT INTO user_roles (userid, role)
 VALUES (001, 'ROLE_ADMIN');
+
+-- definicja tabeli categories gdyby komuś Spring i Hibernate automatycznie jej nie stworzyli
+CREATE TABLE `categories` ( `categoryid` bigint(20) NOT NULL AUTO_INCREMENT,
+`name` varchar(255) DEFAULT NULL, PRIMARY KEY (`categoryid`),
+UNIQUE KEY `UK_t8o6pivur7nn124jehx7cygw5` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8
+
+
+INSERT INTO `io2017`.`categories` (`categoryid`, `name`) VALUES ('1', 'pierwsza');
+INSERT INTO `io2017`.`categories` (`categoryid`, `name`) VALUES ('2', 'druga');

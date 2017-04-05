@@ -3,11 +3,11 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Spring Security Example</title>
+<title>Tworzenie nowej kategorii</title>
+<meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-<!-- <link type="text/css" rel="stylesheet" href="resources/css/basic.css" />  -->
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 <script
@@ -16,17 +16,20 @@
 <body style="padding: 80px;">
 	<div th:replace="fragments/header :: header"></div>
 	<div class="col-md-4 col-md-offset-4">
-	<h1>Witaj na stronie do nauki fiszek!</h1>
-	<p sec:authorize="isAuthenticated()">
-		<p class="navbar-text">
-			Jesteś zalogowany jako: <b sec:authentication="name"></b>
-		</p>
-		
-	</p>
-	<p sec:authorize="!isAuthenticated()">
-		<a th:href="@{/login}">Tutaj można się zalogować</a>
-	</p>
+		<form th:action="@{/admin/categories/newCategory/submit}" th:object="${category}"
+			method="post" class="form-horizontal">
+			<div class="form-group">
+				<label for="name">Nazwa kategorii:</label> <input type="text"
+					th:field="*{name}" class="form-control" id="name" />
+			</div>
+						<button type="submit" class="btn btn-default">Zatwierdź</button>
+			<button type="reset" class="btn btn-default">Resetuj</button>
+		<p th:each="error: ${#fields.errors()}"
+          th:text="${error}">Validation error</p> <!-- TODO błędy walidacji na czerwono -->
+		</form>
+		<a role="button" class="btn btn-info" th:href="@{/admin/categories}">Cofnij</a>
 	</div>
+
 	<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
