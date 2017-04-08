@@ -8,6 +8,7 @@
 </head>
 <body>
 	<div th:replace="fragments/header :: header"></div>
+	<main class="wrapper">
 	<div class="col-md-4 col-md-offset-4">
 		<h1>Wystąpił błąd</h1>
 		<h3 th:text="${errorName}"></h3>
@@ -24,5 +25,6 @@
 		 -->
 	</div>
 	<div th:replace="fragments/footer :: footer"></div>
+	</main>
 </body>
 </html>

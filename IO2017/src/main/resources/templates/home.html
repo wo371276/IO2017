@@ -7,8 +7,8 @@
 <title>Tytuł</title>
 </head>
 <body>
+<main class="wrapper">
 	<div th:replace="fragments/header :: header"></div>
-	<div id="weird-yellow-bar"></div>
 	<div class="col-md-4 col-md-offset-4">
 	<h1>Witaj na stronie do nauki fiszek!</h1>
 	<p sec:authorize="isAuthenticated()">
@@ -22,5 +22,6 @@
 	</p>
 	</div>
 	<div th:replace="fragments/footer :: footer"></div>
+	</main>
 </body>
 </html>

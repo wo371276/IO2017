@@ -9,6 +9,7 @@
 </head>
 <body>
 	<div th:replace="fragments/header :: header"></div>
+	<main clas= wrapper>
 	<div class="col-md-4 col-md-offset-4">
 		<form action="#" th:action="@{/admin/categories/editCategory/submit}" th:object="${category}"
 			method="post" class="form-horizontal">
@@ -23,9 +24,8 @@
 		</form>
 			<a role="button" class="btn btn-info" th:href="@{/admin/categories}">Cofnij</a>
 	</div>
-
-
-
 	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+	
 </body>
 </html>

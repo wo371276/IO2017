@@ -1,3 +1,25 @@
-body {
-	padding: 100px;
+html, body{
+	margin:0;
+   padding:0;
+   height:100%;
+   
+}
+.wrapper{
+	overflow:auto;
+	position: relative;
+	min-height: 100%;
+	width: 100%;
+    padding: 100px 0; 
+}
+.navbar-bottom {
+position:absolute;
+clear: both;
+bottom: 0;
+width: 100%;
+marigin-top: 50px;
+padding: 5px;
+}
+
+.navbar-inverse > p{
+	color = #ffffff
 }

@@ -8,6 +8,7 @@
 </head>
 <body>
 	<div th:replace="fragments/header :: header"></div>
+	<main class='wrapper'>
 	<div class="col-md-8 col-md-offset-2">
 		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
 			administracyjny</a> <a th:href="@{/admin/users/newUser}"
@@ -74,7 +75,8 @@
 			</tr>
 		</table>
 	</div>
+	
 	<div th:replace="fragments/footer :: footer"></div>
-
+	</main>
 </body>
 </html>
