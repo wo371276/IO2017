@@ -4,16 +4,9 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Zarządzanie użytkownikami</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<thymeleaf th:replace="fragments/head :: head" />
 </head>
-<body style="padding: 80px;">
+<body>
 	<div th:replace="fragments/header :: header"></div>
 	<div class="col-md-8 col-md-offset-2">
 		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
@@ -42,7 +35,7 @@
 				<td th:text="${user.email}"></td>
 				<td th:if="${user.enabled}"><p>Aktywny</p></td>
 				<td th:unless="${user.enabled}">Nieaktywny</td>
-				<td><a role="button" class="btn btn-warning"  th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
+				<td><a role="button" class="btn btn-default"  th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
 				<td><a role="button" class="btn btn-danger" th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a></td>
 			</tr>
 		</table>
