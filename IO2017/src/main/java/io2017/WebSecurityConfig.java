@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/confirmRegistration/**").permitAll()
                 .antMatchers("/", "/home").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/css/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
             .exceptionHandling().accessDeniedPage("/403")
