@@ -7,9 +7,10 @@
 <thymeleaf th:replace="fragments/head :: head" />
 </head>
 <body>
+	<main class='wrapper'>
 	<div th:replace="fragments/header :: header"></div>
-	<main class="wrapper">
-	<div class="col-md-6 col-md-offset-2">
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-6 col-md-offset-4">
 		<h1>Panel administracyjny</h1>
 		<a th:href="@{/admin/users}" class="btn btn-primary" role="button">Zarządzanie
 			użytkownikami</a>

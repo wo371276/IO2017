@@ -7,11 +7,12 @@
 <thymeleaf th:replace="fragments/head :: head" />
 </head>
 <body>
+	<main class='wrapper'>
 	<div th:replace="fragments/header :: header"></div>
-	<main class="wrapper">
-	<div class="col-md-4 col-md-offset-4 alert alert-danger" th:if="${param.error}">Błędny login lub hasło, lub
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-4 col-md-offset-5 alert alert-danger" th:if="${param.error}">Błędny login lub hasło, lub
 			użytkownik bez aktywacji.</div>
-	<div class="col-md-2 col-md-offset-5">
+	<div class="col-md-2 col-md-offset-6">
 		<div th:if="${param.logout}">Zostałeś wylogowany.</div>
 		<form th:action="@{/login}" method="post" class="form-horizontal">
 			<div class="form-group">

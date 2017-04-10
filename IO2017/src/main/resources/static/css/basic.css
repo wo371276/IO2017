@@ -23,3 +23,15 @@ padding: 5px;
 .navbar-inverse > p{
 	color = #ffffff
 }
+
+#sidebar-menu {
+	margin-top: 52px;
+	margin-left: -20px;
+	background-color: #e5e5e5;
+	height: calc(100% - 52px);
+	padding-right: 0;
+	z-index: 0;
+}
+
+.sidebar-nav{
+}

@@ -7,9 +7,10 @@
 <thymeleaf th:replace="fragments/head :: head" />
 </head>
 <body>
+	<main class='wrapper'>
 	<div th:replace="fragments/header :: header"></div>
-	<main class="wrapper">
-	<div class="col-md-4 col-md-offset-4">
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-4 col-md-offset-5">
 		<h1>Wystąpił błąd</h1>
 		<h3 th:text="${errorName}"></h3>
 		<p th:text="${errorInfo}"></p>
