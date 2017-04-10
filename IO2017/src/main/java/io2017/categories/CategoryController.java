@@ -114,5 +114,22 @@ public class CategoryController {
 		 
 		 return true;
 	 }
+	 
+	 @RequestMapping("/category")
+	 public String showCategoryForUser(Model model, @RequestParam("id") long id) {
+		 Category category = categoriesRepository.findOne(id);
+		 
+		 model.addAttribute("category", category);
+		
+    	return "category";
+	 }
+	 
+	 @RequestMapping("/categories")
+	public String listCategoriesForUser(Model model) {
+		List<Category> categories = (List<Category>) categoriesRepository.findAll();
+		model.addAttribute("categories", categories);
+		
+		return "categories";
+	}
 
 }

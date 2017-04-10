@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<thymeleaf th:replace="fragments/head :: head" />
+<title>Kategorie</title>
+</head>
+<body>
+<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<div class="col-md-8 col-md-offset-2">
+		<h1>Kategorie:</h1>
+		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+			<div class="panel panel-default" th:each="category : ${categories}">
+			  <div class="panel-heading" role="tab" th:id="'heading' + ${category.name}">
+			    <h4 class="panel-title">
+			      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" th:href="'#collapse' + ${category.categoryId}" aria-expanded="false" th:aria-controls="'collapse' + ${category.categoryId}" th:text="${category.name}"></a>
+			    </h4>
+			  </div>
+			  <div th:id="'collapse' + ${category.categoryId}" class="panel-collapse collapse" role="tabpanel" th:aria-labelledby="'heading' + ${category.name}">
+			    <div class="panel-body">
+			      <div>
+		        	<a th:href="@{/category(id=${category.categoryId})}">
+		        		Wyświetl wszystkie słowniki
+		        	</a>
+		          </div>
+		          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+		      </div>
+			  </div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>

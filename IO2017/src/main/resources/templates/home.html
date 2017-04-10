@@ -15,7 +15,9 @@
 		<p class="navbar-text">
 			Jesteś zalogowany jako: <b sec:authentication="name"></b>
 		</p>
-		
+		<p>
+			<a th:href="@{/categories}">Przejrzyj kategorie</a>
+		</p>
 	</p>
 	<p sec:authorize="!isAuthenticated()">
 		<a th:href="@{/login}">Tutaj można się zalogować</a>
