@@ -1,16 +1,17 @@
 package io2017.users;
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import io2017.dictonaries.Dictionary;
 
 @Entity
 @Table(name = "users")
@@ -43,6 +44,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "enabled")
 	Boolean enabled;
 	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private Set<Dictionary> dictionaries;
+
 	
 	public User(){
 	}
@@ -120,5 +124,16 @@ private static final long serialVersionUID = 1L;
 		this.enabled = enabled;
 	}
 
+	public Set<Dictionary> getDictionaries() {
+		return dictionaries;
+	}
+
+	public void setDictionaries(Set<Dictionary> dictionaries) {
+		this.dictionaries = dictionaries;
+	}
+
+	public void setMatchingPassword(String matchingPassword) {
+		this.matchingPassword = matchingPassword;
+	}
 
 }
