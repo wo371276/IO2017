@@ -37,7 +37,7 @@
 				<td th:text="${user.email}"></td>
 				<td th:if="${user.enabled}"><p>Aktywny</p></td>
 				<td th:unless="${user.enabled}">Nieaktywny</td>
-				<td><a role="button" class="btn btn-default"  th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
+				<td><a role="button" class="btn btn-warning"  th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a></td>
 				<td><a role="button" class="btn btn-danger" th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a></td>
 			</tr>
 		</table>

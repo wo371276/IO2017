@@ -76,4 +76,14 @@ public class DictionaryDto {
 		this.words = words;
 	}
 	
+	public Dictionary buildNewDictionary() {
+		Dictionary dictionary = new Dictionary();
+		dictionary.setCategory(this.getCategory());
+		dictionary.setName(this.name);
+		dictionary.setUser(this.user);
+		dictionary.setLanguage(this.language);
+		
+		return dictionary;
+	}
+	
 }

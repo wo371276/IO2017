@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Dodawanie nowych słówek</title>
+<thymeleaf th:replace="fragments/head :: head" />
+</head>
+<body>
+	<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-8 col-md-offset-3">
+	
+		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
+			administracyjny</a>
+		<a th:href="@{/dictionaries/editWords(id=${dictionaryId})}"
+			class="btn btn-default" role="button">Powrót do listy słówek</a>
+	
+		<h1>Dodaj słówka dla słownika : <span th:text="${dictionaryName}"></span> </h1>
+		<p class="bg-warning">Aby dodać nowe słówka, wpisz każde z nich w osobnej linii.
+		 Wyrażenie w języku obcym i polskie tłumaczenie powinno być oddzielone separtorem "=".
+		 Wyrażenia nie spełniające tych kryteriów zostaną zignorowane.</p>
+		<form th:action="@{/dictionaries/editWords/newWords/submit}"
+			method="post" class="form-horizontal">
+			<input type="hidden"
+					th:field="${newWords.dictionaryId}" class="form-control" id="dictionaryId" />
+		<div><textarea class="form-control" rows="12"
+		    style="margin-top: 10px;"  placeholder="Tu wpisz nowe słówka"
+		    name="newWords" th:field="*{newWords.text}">
+		</textarea></div>
+			
+		<button type="submit" class="btn btn-default">Zatwierdź</button>
+			
+		</form>
+		
+
+	</div>
+	
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Edycja słówek</title>
+<thymeleaf th:replace="fragments/head :: head" />
+</head>
+<body>
+	<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-8 col-md-offset-3">
+	
+		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
+			administracyjny</a>
+		<a th:href="@{/dictionaries/editWords/newWords(id=${dictionaryId})}"
+			class="btn btn-success" role="button">Nowe słówka</a>
+		<a th:href="@{/dictionaries}"
+			class="btn btn-default" role="button">Lista słowników</a>
+	
+		<h1>Słówka dla słownika : <span th:text="${dictionaryName}"></span> </h1>
+		
+		<table class="table table-bordered">
+			<tr>
+				<th>Po polsku</th>
+				<th>Tłumaczenie</th>
+				<th>Edytuj</th>
+				<th>Usuń</th>
+			</tr>
+			<tr th:each="word : ${wordsList}">
+				<td th:text="${word.polishWord}"></td>
+				<td th:text="${word.foreignTranslation}"></td>
+				<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${word.wordId})}">Edytuj TODO</a></td>
+				<td><a role="button" class="btn btn-danger" th:href="@{/dictionaries/editWords/deleteWords(id=${word.wordId}, return=${dictionaryId})}">Usuń</a></td>
+				
+			</tr>
+		</table>
+
+	</div>
+	
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>

@@ -24,6 +24,9 @@
 				<li sec:authorize="hasRole('ROLE_ADMIN')"><a
 					th:href="@{/admin}">Panel administracyjny</a></li>
 				<li>
+					<a th:href="@{/dictionaries}">Zarządzaj swoimi słownikami</a>
+				</li>
+				<li>
 					<p class="navbar-text">
 						<span sec:authentication="name"></span>
 					</p>

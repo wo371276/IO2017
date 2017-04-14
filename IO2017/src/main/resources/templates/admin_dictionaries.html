@@ -14,8 +14,8 @@
 	
 		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
 			administracyjny</a>
-		<a th:href="@{/admin/categories/newCategory}"
-			class="btn btn-default" role="button">Nowy słownik TODO</a>
+		<a th:href="@{/dictionaries/newDictionary}"
+			class="btn btn-default" role="button">Nowy słownik</a>
 	
 		<h1>Słowniki:</h1>
 		
@@ -25,6 +25,7 @@
 				<th>Nazwa</th>
 				<th>Język</th>
 				<th>Nazwa kategorii</th>
+				<th>Edytuj słówka</th>
 				<th>Edycja</th>
 				<th>Usuń</th>
 			</tr>
@@ -33,8 +34,9 @@
 				<td th:text="${dictionary.name}"></td>
 				<td th:text="${dictionary.language}"></td>
 				<td th:text="${dictionary.category.name}"></td>
-				<td><a role="button" class="btn btn-warning"  th:href="@{/admin/dictionaries/editDictionary(id=${dictionary.dictionaryId})}">Edytuj</a></td>
-				<td><a role="button" class="btn btn-danger" th:href="@{/admin/dictionaries/deleteDictionary(id=${dictionary.dictionaryId})}">Usuń</a></td>
+				<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${dictionary.dictionaryId})}">Edytuj słówka</a></td>
+				<td><a role="button" class="btn btn-warning"  th:href="@{/admin/dictionaries/editDictionary(id=${dictionary.dictionaryId})}">Edytuj TODO</a></td>
+				<td><a role="button" class="btn btn-danger" th:href="@{/dictionaries/deleteDictionary(id=${dictionary.dictionaryId})}">Usuń</a></td>
 				
 			</tr>
 		</table>
