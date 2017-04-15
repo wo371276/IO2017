@@ -73,7 +73,13 @@ public class Category implements Serializable {
 	public void setDictonaries(Set<Dictionary> dictonaries) {
 		Dictonaries = dictonaries;
 	}
-
 	
+	public void deleteFromDictionaries(Dictionary dictionary) {
+		this.Dictonaries.remove(dictionary);
+	}
+	
+	public void clearDictionaries() {
+		this.Dictonaries.clear();
+	}
 	
 }

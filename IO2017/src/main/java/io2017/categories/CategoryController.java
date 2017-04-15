@@ -1,11 +1,15 @@
 package io2017.categories;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -13,18 +17,25 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
+import io2017.dictonaries.Dictionary;
+import io2017.dictonaries.DictionaryRepository;
 import io2017.exceptions.CategoryExistsException;
 
 @Controller
 public class CategoryController {
 	
+	CategoryService categoryService;
 	CategoriesRepository categoriesRepository;
+	DictionaryRepository dictionaryRepository;
 	
 	@Autowired
-	public CategoryController(CategoriesRepository categoriesRepository) {
+	public CategoryController(CategoriesRepository categoriesRepository,
+			DictionaryRepository dictionaryRepository,
+			CategoryService categoryService) {
 		this.categoriesRepository = categoriesRepository;
+		this.dictionaryRepository = dictionaryRepository;
+		this.categoryService = categoryService;
 	}
 	
 	@RequestMapping("/admin/categories")
@@ -60,17 +71,19 @@ public class CategoryController {
     	return "redirect:" + "/admin/categories";
 	 }
 	 
+	 /*
+	  * Usunięcie kategorii powoduje, że wszystkie jej słowniki
+	  * zostaną przepisane do kategorii o najmniejszym id
+	  */
 	 @RequestMapping("/admin/categories/deleteCategory")
+	 @Transactional(propagation=Propagation.REQUIRES_NEW, isolation=Isolation.SERIALIZABLE )
 	 public String deleteCategory(Model model, @RequestParam("id") long id) {
-		categoriesRepository.delete(id);
-    	/*
-    	 * TODO jak już będą słowniki, to po usunięci kategorii
-    	 * trzeba przepiać wszytskie jej słowniki do kategorii default
-    	 */
-		
-    	return "redirect:" + "/admin/categories";
+		 categoryService.changeCategoriesForDelete(id);
+		 categoryService.deleteCategory(id);
+		 
+		 return "redirect:" + "/admin/categories";
 	 }
-	 
+
 	 @RequestMapping("/admin/categories/editCategory")
 	 public String editCategory(Model model, @RequestParam("id") long id) {
 		 Category category = categoriesRepository.findOne(id);
