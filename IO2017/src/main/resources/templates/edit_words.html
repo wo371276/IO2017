@@ -12,7 +12,7 @@
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div class="col-md-8 col-md-offset-3">
 	
-		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
+		<a  sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" class="btn btn-primary" role="button">Panel
 			administracyjny</a>
 		<a th:href="@{/dictionaries/editWords/newWords(id=${dictionaryId})}"
 			class="btn btn-success" role="button">Nowe słówka</a>

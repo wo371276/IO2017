@@ -1,22 +1,24 @@
 package io2017.dictonaries;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io2017.categories.CategoriesRepository;
 import io2017.categories.Category;
+import io2017.exceptions.DictionaryExistsException;
 import io2017.helpers.Language;
 import io2017.users.User;
 import io2017.users.UserRepository;
+import io2017.users.UserRolesRepository;
 
 @Controller
 public class DictionaryController {
@@ -25,16 +27,19 @@ public class DictionaryController {
 	UserRepository userRepository;
 	CategoriesRepository categoriesRepository;
 	WordRepository wordRepository;
+	UserRolesRepository userRolesRepository;
 	
 	@Autowired
 	public DictionaryController(DictionaryRepository dictionaryRepository, 
 						UserRepository userRepository,
 						CategoriesRepository categoriesRepository,
-						WordRepository wordRepository) {
+						WordRepository wordRepository,
+						UserRolesRepository userRolesRepository) {
 		this.dictionaryRepository = dictionaryRepository;
 		this.userRepository = userRepository;
 		this.categoriesRepository = categoriesRepository;
 		this.wordRepository = wordRepository;
+		this.userRolesRepository = userRolesRepository;
 	}
 	
 	@RequestMapping("/admin/dictionaries")
@@ -66,23 +71,60 @@ public class DictionaryController {
 	 }
 	
 	 @RequestMapping("/dictionaries/newDictionary/submit")
-	 public String saveDictionary(@ModelAttribute("dictionary") DictionaryDto dictionaryDto,
-			 @RequestParam("language")  String language, @RequestParam("category") Long categoryId ) {
+	 public String saveDictionary(Model model, @ModelAttribute("dictionary") DictionaryDto dictionaryDto,
+			 @RequestParam("language")  String language, @RequestParam("category") Long categoryId,
+			 BindingResult bindingResult) {
 		dictionaryDto.toString();
 		
-		//TODO moze jakas walidacja poprawnosci danych, tzn trzeba chyba tylko nazwe czy jest unique
 		String username = dictionaryDto.getUser().getUserName();
 		User user = userRepository.findByUserName(username);
 		dictionaryDto.setUser(user);
 		
-		Dictionary dictionary = dictionaryDto.buildNewDictionary();
-		
-		dictionaryRepository.save(dictionary);
+		try {
+			saveDictionaryDto(dictionaryDto);
+		} catch (DictionaryExistsException e) {
+			bindingResult.rejectValue("name",  "message.regError", e.toString());
+			
+	        List<Category> allCategories = (List<Category>) categoriesRepository.findAll();
+			
+	    	model.addAttribute("allCategories", allCategories);
+	    	model.addAttribute("dictionary", dictionaryDto);
+	    	model.addAttribute("languages", Language.getAllLanguages());
+			
+			return "create_dictionary";
+		}
 		
     	return "redirect:" + "/dictionaries";
 	 }
+	
+	private void saveDictionaryDto(DictionaryDto dictionaryDto)
+								throws DictionaryExistsException {
+		
+		Dictionary dictionary;
+		
+		// pierwszy przypadek edycja slownika
+		if(dictionaryDto.getDictionaryId() != null) {
+			 Dictionary sameNameDictionary = dictionaryRepository.findByName(dictionaryDto.getName());
+			 if(sameNameDictionary != null) {
+				 if(dictionaryDto.getDictionaryId().equals(sameNameDictionary.getDictionaryId()) == false) {
+					 throw new DictionaryExistsException();
+				 }
+			 }
+			 //TODO sprawdzić czy dla edycji funkcja działa OK
+			 dictionary = dictionaryRepository.findOne(dictionaryDto.getDictionaryId());
+		 } else {
+			 //slownik nie ma ID -> nowy slownik
+			 Dictionary sameNameDictionary = dictionaryRepository.findByName(dictionaryDto.getName());
+			 if(sameNameDictionary != null) {
+				 throw new DictionaryExistsException();
+			 }
+			 dictionary = dictionaryDto.buildNewDictionary();
+		 }
+		
+		dictionaryRepository.save(dictionary);
+	}
 	 
-	 @RequestMapping("/dictionaries")
+	@RequestMapping("/dictionaries")
 	public String listMyDictionaries(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userMail = auth.getName(); // bo w tej metodzie auth zwraca email
@@ -90,13 +132,21 @@ public class DictionaryController {
         
 		List<Dictionary> dictionaries = (List<Dictionary>)dictionaryRepository.findByUser(user);
 		model.addAttribute("dictionaries", dictionaries);
+		model.addAttribute("isNotAdminPage", "true");
 		
+		//celowo używam tego samego template'u co dla admin'a
 		return "admin_dictionaries";
 	}
 	 
 	 @RequestMapping("/dictionaries/editWords")
 	 public String editWords(Model model, @RequestParam("id") long dictionaryId) {
+		 
+		 if(this.haveAccess(dictionaryId) == false) {
+			 return "redirect:" + "/403";
+		 }
+		 
 		 Dictionary dictionary = dictionaryRepository.findOne(dictionaryId);
+		 
 		 List<Word> wordsList = wordRepository.findByDictionary(dictionary);
 		 model.addAttribute("wordsList", wordsList);
 		 model.addAttribute("dictionaryId", dictionaryId);
@@ -108,6 +158,10 @@ public class DictionaryController {
 	 @RequestMapping("/dictionaries/editWords/deleteWords")
 	 public String deleteWords(Model model, @RequestParam("id") long wordId,
 			 					@RequestParam("return") long dictionaryId) {
+		 if(this.haveAccess(dictionaryId) == false) {
+			 return "redirect:" + "/403";
+		 }
+		 
 		 wordRepository.delete(wordId);
 		 
 		 return "redirect:" + "/dictionaries/editWords?id=" + String.valueOf(dictionaryId);
@@ -115,6 +169,11 @@ public class DictionaryController {
 	 
 	 @RequestMapping("/dictionaries/deleteDictionary")
 	 public String deleteDictionary(Model model, @RequestParam("id") long dictionaryId) {
+		 
+		 if(this.haveAccess(dictionaryId) == false) {
+			 return "redirect:" + "/403";
+		 }
+		 
 		 dictionaryRepository.delete(dictionaryId);
 		 // słowa tego słownika dzieki foreign key same się usuwają
 		 
@@ -123,6 +182,11 @@ public class DictionaryController {
 	 
 	 @RequestMapping("/dictionaries/editWords/newWords")
 	 public String newWords(Model model, @RequestParam("id") long dictionaryId) {
+		 
+		 if(this.haveAccess(dictionaryId) == false) {
+			 return "redirect:" + "/403";
+		 }
+		 
 		 Dictionary dictionary = dictionaryRepository.findOne(dictionaryId);
 		 model.addAttribute("dictionaryId", dictionaryId);
 		 model.addAttribute("dictionaryName", dictionary.getName());
@@ -160,6 +224,27 @@ public class DictionaryController {
 		 return "redirect:" + "/dictionaries/editWords?id=" + String.valueOf(dictionaryId);
 	 }
 	 
+	 /*
+	  * sprawdza czy użytkownik może dokonywać zmian
+	  * na słowniku o danym id
+	  */
+	 private boolean haveAccess(long dictionaryId) {
+		 User me = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 boolean isAdmin = userRolesRepository.findRoleByUserId(me.getUserId()).get(0).equals("ROLE_ADMIN");
+		 
+		 Dictionary dictionary = dictionaryRepository.findOne(dictionaryId);
+		 
+		 if(isAdmin == false) {
+			 //skoro nie admin to sprawdzamy czy to jego słownik
+			 if(dictionary.getUser().getUserId().equals(me.getUserId()) != true) {
+				 //skoro nie moj slownik to odrzucamy żądanie
+				 return false;
+			 }
+		 }
+		 
+		 return true;
+	 }
+	 
 	 //TODO edycja istniejących słówek
 	 //TODO edycja istniejących słowników
 	 
@@ -190,8 +275,6 @@ public class DictionaryController {
 		@SuppressWarnings("unused")
 		public void setDictionaryId(Long dictionaryId) {
 			this.dictionaryId = dictionaryId;
-		}
-		
-		 
+		}	 
 	 }
 }

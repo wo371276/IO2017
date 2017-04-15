@@ -2,14 +2,25 @@ package io2017.dictonaries;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import io2017.categories.Category;
 import io2017.users.User;
+import io2017.validators.ValidDictionaryName;
 
 public class DictionaryDto {
 	private Long dictionaryId;
 	private Category category;
 	private User user;
+	
+	@ValidDictionaryName
+	@NotNull
+	@NotEmpty(message="Pole nie może być puste")
 	private String name;
+	
 	private String language;
 	private Set<Word> words;
 	

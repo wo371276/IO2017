@@ -1,9 +1,11 @@
+<!--/* Admin to trochę myląca nazwa bo z template korzystają też zwykli użytkownicy */-->
+
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-<title>Zarządzanie kategoriami</title>
+<title>Zarządzanie słownikami</title>
 <thymeleaf th:replace="fragments/head :: head" />
 </head>
 <body>
@@ -11,13 +13,17 @@
 	<div th:replace="fragments/header :: header"></div>
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div class="col-md-8 col-md-offset-3">
-	
-		<a th:href="@{/admin}" class="btn btn-primary" role="button">Panel
-			administracyjny</a>
+		<span th:if="${isNotAdminPage}" >
+			<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin/dictionaries}"
+					class="btn btn-primary" role="button">Wyświetl wszystkie słowniki</a>
+		</span>
+		<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}" 
+			class="btn btn-primary" role="button">Panel administracyjny</a>
 		<a th:href="@{/dictionaries/newDictionary}"
-			class="btn btn-default" role="button">Nowy słownik</a>
+			class="btn btn-success" role="button">Nowy słownik</a>
 	
-		<h1>Słowniki:</h1>
+		<h1 th:if="${isNotAdminPage}">Twoje słowniki:</h1>
+		<h1 th:unless="${isNotAdminPage}">Wszystkie słowniki:</h1>
 		
 		<table class="table table-bordered">
 			<tr>
@@ -25,6 +31,7 @@
 				<th>Nazwa</th>
 				<th>Język</th>
 				<th>Nazwa kategorii</th>
+				<th th:unless="${isNotAdminPage}" >Właściciel</th>
 				<th>Edytuj słówka</th>
 				<th>Edycja</th>
 				<th>Usuń</th>
@@ -34,6 +41,7 @@
 				<td th:text="${dictionary.name}"></td>
 				<td th:text="${dictionary.language}"></td>
 				<td th:text="${dictionary.category.name}"></td>
+				<td th:unless="${isNotAdminPage}"  th:text="${dictionary.user.userName}"></td>
 				<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${dictionary.dictionaryId})}">Edytuj słówka</a></td>
 				<td><a role="button" class="btn btn-warning"  th:href="@{/admin/dictionaries/editDictionary(id=${dictionary.dictionaryId})}">Edytuj TODO</a></td>
 				<td><a role="button" class="btn btn-danger" th:href="@{/dictionaries/deleteDictionary(id=${dictionary.dictionaryId})}">Usuń</a></td>
