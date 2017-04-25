@@ -32,7 +32,7 @@
 				<th:block th:if="${id} != ${word.wordId}">
 					<td th:text="${word.polishWord}"></td>
 					<td th:text="${word.foreignTranslation}"></td>
-					<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${dictionaryId},word_id=${word.wordId})}">Edytuj TODO</a></td>
+					<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${dictionaryId},word_id=${word.wordId})}">Edytuj</a></td>
 					<td><a role="button" class="btn btn-danger" th:href="@{/dictionaries/editWords/deleteWords(id=${word.wordId}, return=${dictionaryId})}">Usuń</a></td>
 				</th:block>
 				<th:block th:if="${id} == ${word.wordId}">
