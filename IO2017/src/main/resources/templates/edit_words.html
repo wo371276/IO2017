@@ -29,11 +29,27 @@
 				<th>Usuń</th>
 			</tr>
 			<tr th:each="word : ${wordsList}">
-				<td th:text="${word.polishWord}"></td>
-				<td th:text="${word.foreignTranslation}"></td>
-				<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${word.wordId})}">Edytuj TODO</a></td>
-				<td><a role="button" class="btn btn-danger" th:href="@{/dictionaries/editWords/deleteWords(id=${word.wordId}, return=${dictionaryId})}">Usuń</a></td>
-				
+				<th:block th:if="${id} != ${word.wordId}">
+					<td th:text="${word.polishWord}"></td>
+					<td th:text="${word.foreignTranslation}"></td>
+					<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${dictionaryId},word_id=${word.wordId})}">Edytuj TODO</a></td>
+					<td><a role="button" class="btn btn-danger" th:href="@{/dictionaries/editWords/deleteWords(id=${word.wordId}, return=${dictionaryId})}">Usuń</a></td>
+				</th:block>
+				<th:block th:if="${id} == ${word.wordId}">
+					<td colspan="4">
+						<form th:action="@{/dictionaries/editWord/submit}"
+							method="post" class="form-horizontal">
+							<input type="hidden" th:value="${word.wordId}" name="wordId"/>
+							<input type="hidden" th:value="${dictionaryId}" name="dictionaryId"/>
+							<input type="text" th:value="${word.polishWord}" class="col-md-2 form-control" name="polishWord" />
+							<input type="text" th:value="${word.foreignTranslation}" class="col-md-2 form-control" name="foreignTranslation" />
+							<div class="alert alert-danger" th:each="error: ${#fields.errors('*')}"
+				         			th:text="${error}" >Validation error</div>
+							<button type="submit" class="col-md-2 btn btn-success">Zatwierdź</button>
+							<button type="reset" class="col-md-2 btn btn-default">Resetuj</button>
+						</form>
+					</td>
+				</th:block>
 			</tr>
 		</table>
 

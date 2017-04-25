@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io2017.categories.CategoriesRepository;
-import io2017.dictonaries.DictionaryRepository;
+import io2017.dictionaries.DictionaryRepository;
 
 public class DictionaryNameValidator 
 	implements ConstraintValidator<ValidDictionaryName, String> {

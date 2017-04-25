@@ -1,4 +1,4 @@
-package io2017.dictonaries;
+package io2017.dictionaries;
 
 import java.util.List;
 

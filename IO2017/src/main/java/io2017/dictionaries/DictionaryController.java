@@ -1,6 +1,8 @@
-package io2017.dictonaries;
+package io2017.dictionaries;
 
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io2017.categories.CategoriesRepository;
 import io2017.categories.Category;
+import io2017.categories.CategoryDto;
+import io2017.exceptions.CategoryExistsException;
 import io2017.exceptions.DictionaryExistsException;
 import io2017.helpers.Language;
 import io2017.users.User;
@@ -76,6 +80,11 @@ public class DictionaryController {
 			 BindingResult bindingResult) {
 		dictionaryDto.toString();
 		
+		if(bindingResult.hasErrors() == true) {
+			System.out.println("there's an error");
+			return "create_dictionary";
+		}
+		
 		String username = dictionaryDto.getUser().getUserName();
 		User user = userRepository.findByUserName(username);
 		dictionaryDto.setUser(user);
@@ -96,6 +105,47 @@ public class DictionaryController {
 		
     	return "redirect:" + "/dictionaries";
 	 }
+	 
+	 @RequestMapping("/dictionaries/editDictionary")
+	    public String editDictionary(Model model, @RequestParam("id") long id) {			 
+			 if(this.haveAccess(id) == false) {
+				 return "redirect:" + "/403";
+			 }
+			 
+			 Dictionary dictionary = dictionaryRepository.findOne(id);
+
+			 DictionaryDto dictionaryDto = new DictionaryDto(dictionary);
+			 
+		     List<Category> allCategories = (List<Category>) categoriesRepository.findAll();
+
+			 model.addAttribute("allCategories", allCategories);
+			 model.addAttribute("dictionary", dictionaryDto);
+			 model.addAttribute("languages", Language.getAllLanguages());			 
+			 
+			 return "edit_dictionary";
+		 }
+	 
+	 @RequestMapping("/dictionaries/editDictionary/submit")
+	 public String saveEditedDictionary(Model model, @ModelAttribute("dictionary") DictionaryDto dictionaryDto,
+			 @RequestParam("language")  String language, @RequestParam("category") Long categoryId,
+			 BindingResult bindingResult) {
+    	//TODO dodać sprawdzanie czy nowy tytuł nie jest pusty
+		try {
+			saveDictionaryDto(dictionaryDto);
+		} catch (DictionaryExistsException e) {
+			bindingResult.rejectValue("name",  "message.regError", e.toString());
+			
+			List<Category> allCategories = (List<Category>) categoriesRepository.findAll();
+			
+	    	model.addAttribute("allCategories", allCategories);
+	    	model.addAttribute("dictionary", dictionaryDto);
+	    	model.addAttribute("languages", Language.getAllLanguages());
+			
+			return "edit_dictionary";
+		}
+		
+    	return "redirect:" + "/dictionaries";
+	 }
 	
 	private void saveDictionaryDto(DictionaryDto dictionaryDto)
 								throws DictionaryExistsException {
@@ -104,14 +154,16 @@ public class DictionaryController {
 		
 		// pierwszy przypadek edycja slownika
 		if(dictionaryDto.getDictionaryId() != null) {
-			 Dictionary sameNameDictionary = dictionaryRepository.findByName(dictionaryDto.getName());
-			 if(sameNameDictionary != null) {
-				 if(dictionaryDto.getDictionaryId().equals(sameNameDictionary.getDictionaryId()) == false) {
-					 throw new DictionaryExistsException();
-				 }
-			 }
-			 //TODO sprawdzić czy dla edycji funkcja działa OK
+//			 Dictionary sameNameDictionary = dictionaryRepository.findByName(dictionaryDto.getName());
+//			 if(sameNameDictionary != null) {
+//				 if(dictionaryDto.getDictionaryId().equals(sameNameDictionary.getDictionaryId()) == false) {
+//					 throw new DictionaryExistsException();
+//				 }
+//			 }
 			 dictionary = dictionaryRepository.findOne(dictionaryDto.getDictionaryId());
+			 dictionary.setName(dictionaryDto.getName());
+			 dictionary.setCategory(dictionaryDto.getCategory());
+			 dictionary.setLanguage(dictionaryDto.getLanguage());
 		 } else {
 			 //slownik nie ma ID -> nowy slownik
 			 Dictionary sameNameDictionary = dictionaryRepository.findByName(dictionaryDto.getName());
@@ -139,7 +191,8 @@ public class DictionaryController {
 	}
 	 
 	 @RequestMapping("/dictionaries/editWords")
-	 public String editWords(Model model, @RequestParam("id") long dictionaryId) {
+	 public String editWords(Model model, @RequestParam("id") long dictionaryId,
+			 @RequestParam(value = "word_id", required = false) Long wordId) {
 		 
 		 if(this.haveAccess(dictionaryId) == false) {
 			 return "redirect:" + "/403";
@@ -151,6 +204,31 @@ public class DictionaryController {
 		 model.addAttribute("wordsList", wordsList);
 		 model.addAttribute("dictionaryId", dictionaryId);
 		 model.addAttribute("dictionaryName", dictionary.getName());
+		 model.addAttribute("id", wordId);
+		 		 
+		 return "edit_words";
+	 }
+	 
+	 @RequestMapping("/dictionaries/editWord/submit")
+	 public String saveWord(Model model,
+			 @RequestParam("wordId")  Long wordId,
+			 @RequestParam("dictionaryId")  Long dictionaryId,
+			 @RequestParam("polishWord")  String polishWord,
+			 @RequestParam("foreignTranslation") String foreignTranslation) {
+		 Dictionary dictionary = dictionaryRepository.findOne(dictionaryId);
+		 Word word = wordRepository.findOne(wordId);
+		 System.out.println(word.getPolishWord());
+		 
+		 word.setPolishWord(polishWord);
+		 word.setForeignTranslation(foreignTranslation);
+		 
+		 wordRepository.save(word);
+		 
+		 List<Word> wordsList = wordRepository.findByDictionary(dictionary);
+		 model.addAttribute("wordsList", wordsList);
+		 model.addAttribute("dictionaryId", dictionaryId);
+		 model.addAttribute("dictionaryName", dictionary.getName());
+		 model.addAttribute("id", null);
 		 
 		 return "edit_words";
 	 }
@@ -244,10 +322,7 @@ public class DictionaryController {
 		 
 		 return true;
 	 }
-	 
-	 //TODO edycja istniejących słówek
-	 //TODO edycja istniejących słowników
-	 
+	 	 
 	 private class TextArea {
 		 private String text;
 		 private Long dictionaryId;

@@ -1,10 +1,11 @@
-
-CREATE DATABASE io2017;
+CREATE DATABASE io2017
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
 use io2017;
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS users;
 CREATE  TABLE users (
-  userid int(11) NOT NULL AUTO_INCREMENT,
+  userid bigint(20) NOT NULL AUTO_INCREMENT,
   username VARCHAR(45) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   surname VARCHAR(255) NOT NULL,
@@ -14,8 +15,8 @@ CREATE  TABLE users (
   PRIMARY KEY (userid));
   
 CREATE TABLE user_roles (
-  user_role_id int(11) NOT NULL AUTO_INCREMENT,
-  userid int(11) NOT NULL,
+  user_role_id bigint(20) NOT NULL AUTO_INCREMENT,
+  userid bigint(20) NOT NULL,
   role varchar(45) NOT NULL,
   PRIMARY KEY (user_role_id),
   UNIQUE KEY uni_userid_role (role,userid),

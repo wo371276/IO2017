@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
-import io2017.dictonaries.Dictionary;
-import io2017.dictonaries.DictionaryRepository;
+import io2017.dictionaries.Dictionary;
+import io2017.dictionaries.DictionaryRepository;
 import io2017.exceptions.CategoryExistsException;
 
 @Controller

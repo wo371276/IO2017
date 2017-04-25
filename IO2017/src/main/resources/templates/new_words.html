@@ -19,7 +19,7 @@
 	
 		<h1>Dodaj słówka dla słownika : <span th:text="${dictionaryName}"></span> </h1>
 		<p class="bg-warning">Aby dodać nowe słówka, wpisz każde z nich w osobnej linii.
-		 Wyrażenie w języku obcym i polskie tłumaczenie powinno być oddzielone separtorem "=".
+		 Wyrażenie w języku obcym i polskie tłumaczenie powinno być oddzielone separatorem "=".
 		 Wyrażenia nie spełniające tych kryteriów zostaną zignorowane.</p>
 		<form th:action="@{/dictionaries/editWords/newWords/submit}"
 			method="post" class="form-horizontal">

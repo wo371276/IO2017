@@ -1,4 +1,4 @@
-package io2017.dictonaries;
+package io2017.dictionaries;
 
 import java.io.Serializable;
 
@@ -11,11 +11,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "words")
 public class Word implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7231295020251785358L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="wordid")

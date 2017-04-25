@@ -1,4 +1,4 @@
-package io2017.dictonaries;
+package io2017.dictionaries;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -21,8 +21,13 @@ import io2017.users.User;
 
 
 @Entity
-@Table(name = "dictonaries")
+@Table(name = "dictionaries")
 public class Dictionary implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1242903094171868298L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="dictionaryid")

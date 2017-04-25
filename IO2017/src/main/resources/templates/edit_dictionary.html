@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Edytuj słownik</title>
+<thymeleaf th:replace="fragments/head :: head" />
+</head>
+<body>
+	<main class='wrapper'>
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	
+	<div class="col-md-4 col-md-offset-5">
+		<a role="button" class="btn btn-info" th:href="@{/dictionaries}">Cofnij</a>
+	</div>
+	
+	<div class="col-md-4 col-md-offset-5"  style="padding-top: 10px;">
+		<form th:action="@{/dictionaries/editDictionary/submit}"
+			method="post" class="form-horizontal" th:object="${dictionary}">
+			<div class="form-group">
+				<label for="name">Nazwa słownika:</label> <input type="text"
+					th:field="*{name}"
+					 class="form-control" id="name" />
+				<input type="hidden" th:field="*{user}"/>
+				<input type="hidden" th:field="*{dictionaryId}" />
+				<label for="category">Kategoria: </label>
+				<select class="form-control" id="category" th:field="*{category}">
+		          <option th:each="var : ${allCategories}" 
+		                  th:value="${var.categoryId}" 
+		                  th:text="${var.name}"></option>
+		        </select>
+		        <label for="language">Język: </label>
+				<select class="form-control"  id="language" th:field="*{language}">
+		          <option th:each="var : ${languages}" 
+		                  th:value="${var.name}" 
+		                  th:text="${var.name}"></option>
+		        </select>
+			</div>
+			<div class="alert alert-danger" th:each="error: ${#fields.errors('*')}"
+         			th:text="${error}" >Validation error</div>
+			<button type="submit" class="btn btn-success">Zatwierdź</button>
+			<button type="reset" class="btn btn-default">Resetuj</button>
+		</form>
+	</div>
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>

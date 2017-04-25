@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import io2017.dictonaries.Dictionary;
+import io2017.dictionaries.Dictionary;
 
 @Entity
 @Table(name = "categories")
@@ -35,7 +35,7 @@ public class Category implements Serializable {
 	private String name;
 	
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-	private Set<Dictionary> Dictonaries;
+	private Set<Dictionary> dictionaries;
 	
 	public Category() {
 		
@@ -66,20 +66,20 @@ public class Category implements Serializable {
 		this.name = name;
 	}
 
-	public Set<Dictionary> getDictonaries() {
-		return Dictonaries;
+	public Set<Dictionary> getDictionaries() {
+		return dictionaries;
 	}
 
-	public void setDictonaries(Set<Dictionary> dictonaries) {
-		Dictonaries = dictonaries;
+	public void setDictionaries(Set<Dictionary> dictionaries) {
+		dictionaries = dictionaries;
 	}
 	
 	public void deleteFromDictionaries(Dictionary dictionary) {
-		this.Dictonaries.remove(dictionary);
+		this.dictionaries.remove(dictionary);
 	}
 	
 	public void clearDictionaries() {
-		this.Dictonaries.clear();
+		this.dictionaries.clear();
 	}
 	
 }

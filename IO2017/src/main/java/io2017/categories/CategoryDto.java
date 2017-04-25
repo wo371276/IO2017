@@ -15,7 +15,7 @@ public class CategoryDto {
 	//TODO przedefiniować jakoś komunikat "size must be between 2 and 30
 	@ValidCategoryName
 	@NotNull
-	@Size(min=2, max=30)
+	@Size(min=2, max=30, message="Nazwa musi mieć co najmniej 2 i co najwyżej 30 znaków")
 	@NotEmpty(message="Pole nie może być puste")
 	private String name;
 	

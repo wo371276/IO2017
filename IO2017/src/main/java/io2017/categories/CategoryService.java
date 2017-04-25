@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import io2017.dictonaries.Dictionary;
-import io2017.dictonaries.DictionaryRepository;
+import io2017.dictionaries.Dictionary;
+import io2017.dictionaries.DictionaryRepository;
 
 @Service("categoryService")
 public class CategoryService implements Service {
@@ -54,7 +54,7 @@ public class CategoryService implements Service {
 		 if(minId != null) {
 	         Category defaultCategory = categoriesRepository.findOne(minId);
 	         Category categoryToRemove = categoriesRepository.findOne(id);
-	         Set<Dictionary> dictionaries = categoryToRemove.getDictonaries();
+	         Set<Dictionary> dictionaries = categoryToRemove.getDictionaries();
 	         
 	         for(Dictionary dictionary : dictionaries) {
 	             dictionary.setCategory(defaultCategory);

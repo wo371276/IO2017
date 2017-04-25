@@ -11,14 +11,16 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import io2017.dictonaries.Dictionary;
+import io2017.dictionaries.Dictionary;
 
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
 
-private static final long serialVersionUID = 1L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4477633595616089450L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

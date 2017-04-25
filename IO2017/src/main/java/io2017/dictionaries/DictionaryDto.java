@@ -1,4 +1,4 @@
-package io2017.dictonaries;
+package io2017.dictionaries;
 
 import java.util.Set;
 
@@ -18,6 +18,7 @@ public class DictionaryDto {
 	
 	@ValidDictionaryName
 	@NotNull
+	@Size(min=2, max=30, message="Nazwa musi mieć co najmniej 2 i co najwyżej 30 znaków")
 	@NotEmpty(message="Pole nie może być puste")
 	private String name;
 	
@@ -37,6 +38,15 @@ public class DictionaryDto {
 
 	public DictionaryDto() {
 		
+	}
+
+	public DictionaryDto(Dictionary dictionary) {
+		this.dictionaryId = dictionary.getDictionaryId();
+		this.category = dictionary.getCategory();
+		this.user = dictionary.getUser();
+		this.name = dictionary.getName();
+		this.language = dictionary.getLanguage();
+		this.words = dictionary.getWords();
 	}
 
 	public Long getDictionaryId() {

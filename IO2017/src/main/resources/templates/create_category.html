@@ -10,12 +10,6 @@
 	<main class='wrapper'>
 	<div th:replace="fragments/header :: header"></div>
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
-	
-	<div class="col-md-4 col-md-offset-5">
-		<a role="button" class="btn btn-info" th:href="@{/admin/categories}">Cofnij</a>
-	</div>
-	
-	
 	<div class="col-md-4 col-md-offset-5" style="padding-top: 10px;">
 		<form th:action="@{/admin/categories/newCategory/submit}" th:object="${category}"
 			method="post" class="form-horizontal">
