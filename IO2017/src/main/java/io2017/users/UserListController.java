@@ -59,9 +59,8 @@ public class UserListController {
     
     @RequestMapping("/admin/users/newUser")
     public String createUser(Model model) {
-    	User user = new User();
-    	model.addAttribute("user", user);
-    	model.addAttribute("roleAdmin", false);
+    	UserDto userDto = new UserDto();
+    	model.addAttribute("user", userDto);
     	
     	return "create_user";
     }
@@ -80,29 +79,47 @@ public class UserListController {
     }
     
     @RequestMapping("/admin/users/newUser/submit")
-    public String saveUser( @ModelAttribute("user") User user, 
-    						@RequestParam(value="enabled", required = false, defaultValue = "off") String enabled,
-    						@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
-    	
-    	//TODO userValidator i reject values
-    	user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+    public String saveUser( @ModelAttribute("user") UserDto userDto,
+    						BindingResult result, 
+    				    	WebRequest request, 
+    				    	Errors errors) {
+    	 User registered = new User();
+         if (!result.hasErrors()) {
+         	try {
+					registered = registerNewUserAccount(userDto);
+					registered.setPassword(new BCryptPasswordEncoder().encode(registered.getPassword()));
+					
+					if(userDto.isEnabled()) {
+						registered.setEnabled(true);
+					} else {
+						registered.setEnabled(false);
+					}
+					
+					userRepository.save(registered);
+					
+					if(userDto.isAdmin()) {
+			    		userRolesRepository.save(new UserRole(null, registered.getUserId(), "ROLE_ADMIN"));
+			    	} else {
+			    		userRolesRepository.save(new UserRole(null, registered.getUserId(), "ROLE_USER"));
+			    	}
 
-    	if(enabled.equals("on")) {
-    		user.setEnabled(true);
-    	} else {
-    		user.setEnabled(false);
-    	}
-    	userRepository.save(user);
-    	System.out.println(roleAdmin);
-    	if(roleAdmin.equals("on")) {
-    		userRolesRepository.save(new UserRole(null, user.getUserId(), "ROLE_ADMIN"));
-    	} else {
-    		userRolesRepository.save(new UserRole(null, user.getUserId(), "ROLE_USER"));
-    	}
-    	
-    	System.out.println("savedUser");
-    	
-    	return "redirect:" + "/admin/users";
+             	System.out.println("savedUser");
+             } catch (EmailExistsException e) {
+                 result.rejectValue("email", "message.regError", "Istnieje już konto dla adresu mailowego <" + userDto.getEmail() + ">");
+             } catch (UserExistsException e) {
+                 result.rejectValue("username", "message.regError", "Istnieje już użytkownik o loginie <" + userDto.getUsername() + ">");
+ 			}
+         	
+         }
+         
+     	System.out.println(result.getGlobalErrorCount());
+
+         if (result.hasErrors()) {
+             return "create_user";
+         } 
+         else {
+        	 return "redirect:" + "/admin/users";
+         }
     }
     
     @RequestMapping("/admin/users/editUser/submit")
