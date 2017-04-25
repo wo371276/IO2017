@@ -3,7 +3,7 @@ package io2017.validators;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import io2017.users.UserDto;
+import io2017.users.dto.UserRegisterDto;
 
 public class PasswordMatchesValidator 
 implements ConstraintValidator<PasswordMatches, Object> { 
@@ -13,7 +13,7 @@ implements ConstraintValidator<PasswordMatches, Object> {
   }
   @Override
   public boolean isValid(Object obj, ConstraintValidatorContext context){   
-      UserDto user = (UserDto) obj;
+      UserRegisterDto user = (UserRegisterDto) obj;
       return user.getPassword().equals(user.getMatchingPassword());    
   }     
 }

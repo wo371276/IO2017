@@ -1,4 +1,4 @@
-package io2017.users;
+package io2017.users.dto;
 
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -6,51 +6,38 @@ import org.hibernate.validator.constraints.NotEmpty;
 import io2017.validators.PasswordMatches;
 import io2017.validators.ValidEmail;
 
-@PasswordMatches
 public class UserDto {
 	
 	@NotNull
     @NotEmpty(message="Pole nie może być puste")
-    private String username;
+    protected String username;
 	
 	@NotNull
     @NotEmpty(message="Pole nie może być puste")
-    private String name;
+	protected String name;
      
     @NotNull
     @NotEmpty(message="Pole nie może być puste")
-    private String surname;
+    protected String surname;
      
     @ValidEmail
     @NotNull
     @NotEmpty(message="Pole nie może być puste")
-    private String email;
+    protected String email;
     
-    @NotNull
-    @NotEmpty(message="Pole nie może być puste")
-    private String password;
+    protected boolean enabled = false;
     
-    @NotNull
-    @NotEmpty(message="Pole nie może być puste")
-    private String matchingPassword;
-    
-    private boolean enabled = false;
-    
-    private boolean isAdmin = false;
+    protected boolean admin = false;
     
     public UserDto() {
     	
     }
     
-	public UserDto(String username, String name, String surname, String email, String password,
-			String matchingPassword) {
-		super();
+	public UserDto(String username, String name, String surname, String email) {
 		this.username = username;
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
-		this.password = password;
-		this.matchingPassword = matchingPassword;
 	}
 
 	public String getUsername() {
@@ -85,22 +72,6 @@ public class UserDto {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getMatchingPassword() {
-		return matchingPassword;
-	}
-
-	public void setMatchingPassword(String matchingPassword) {
-		this.matchingPassword = matchingPassword;
-	}
-
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -110,11 +81,11 @@ public class UserDto {
 	}
 
 	public boolean isAdmin() {
-		return isAdmin;
+		return admin;
 	}
 
-	public void setAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
 	}
 
 }

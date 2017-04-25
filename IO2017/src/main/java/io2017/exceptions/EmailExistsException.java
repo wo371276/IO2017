@@ -8,5 +8,9 @@ public class EmailExistsException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = -6211498797525617895L;
-
+	
+	@Override
+	public String toString() {
+		return "Istnieje już konto dla tego adresu mailowego";      
+	}
 }

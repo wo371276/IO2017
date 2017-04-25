@@ -20,8 +20,11 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import io2017.exceptions.EmailExistsException;
+import io2017.exceptions.EmptyPasswordException;
 import io2017.exceptions.UserExistsException;
 import io2017.helpers.RegistrationHashHelper;
+import io2017.users.dto.UserEditDto;
+import io2017.users.dto.UserRegisterDto;
 
 @Controller
 public class UserListController {
@@ -59,33 +62,23 @@ public class UserListController {
     
     @RequestMapping("/admin/users/newUser")
     public String createUser(Model model) {
-    	UserDto userDto = new UserDto();
+    	UserRegisterDto userDto = new UserRegisterDto();
     	model.addAttribute("user", userDto);
     	
     	return "create_user";
     }
-    
-    @RequestMapping("/admin/users/editUser")
-    public String editUser(Model model, @RequestParam("id") long id) {
-    	
-    	User editUser = userRepository.findOne(id);
-    	model.addAttribute("user", editUser);
-    	//System.out.println("id: " + id);
-    	boolean isAdmin = userRolesRepository.findRoleByUserId(id).get(0).equals("ROLE_ADMIN");
-    	model.addAttribute("enabled", editUser.getEnabled());
-    	model.addAttribute("roleAdmin", isAdmin);
-    	
-    	return "edit_user";
-    }
-    
+
     @RequestMapping("/admin/users/newUser/submit")
-    public String saveUser( @ModelAttribute("user") UserDto userDto,
+    public String saveUser( @ModelAttribute("user") UserRegisterDto userDto,
     						BindingResult result, 
     				    	WebRequest request, 
     				    	Errors errors) {
     	 User registered = new User();
          if (!result.hasErrors()) {
-         	try {
+        	 try {
+         			if(userDto.getPassword() == null || userDto.getPassword().equals("")) {
+         				throw new EmptyPasswordException();
+         			}
 					registered = registerNewUserAccount(userDto);
 					registered.setPassword(new BCryptPasswordEncoder().encode(registered.getPassword()));
 					
@@ -104,10 +97,12 @@ public class UserListController {
 			    	}
 
              	System.out.println("savedUser");
-             } catch (EmailExistsException e) {
-                 result.rejectValue("email", "message.regError", "Istnieje już konto dla adresu mailowego <" + userDto.getEmail() + ">");
-             } catch (UserExistsException e) {
-                 result.rejectValue("username", "message.regError", "Istnieje już użytkownik o loginie <" + userDto.getUsername() + ">");
+            } catch (EmailExistsException e) {
+                result.rejectValue("email", "message.regError", "Istnieje już konto dla adresu mailowego <" + userDto.getEmail() + ">");
+            } catch (UserExistsException e) {
+                result.rejectValue("username", "message.regError", "Istnieje już użytkownik o loginie <" + userDto.getUsername() + ">");
+ 			} catch (EmptyPasswordException e) {
+ 				result.rejectValue("username", "message.regError", e.toString());
  			}
          	
          }
@@ -121,39 +116,71 @@ public class UserListController {
         	 return "redirect:" + "/admin/users";
          }
     }
+     
+    @RequestMapping("/admin/users/editUser")
+    public String editUser(Model model, @RequestParam("id") long id) {
+    	
+    	User editUser = userRepository.findOne(id);
+    	UserEditDto userEditDto = UserEditDto.buildDto(editUser);
+    	
+    	boolean isAdmin = userRolesRepository.findRoleByUserId(id).get(0).equals("ROLE_ADMIN");
+    	userEditDto.setEnabled(editUser.getEnabled());
+    	userEditDto.setAdmin(isAdmin);
+    	
+    	model.addAttribute("user", userEditDto);
+    	
+    	return "edit_user";
+    }
     
     @RequestMapping("/admin/users/editUser/submit")
-    public String saveEditedUser(@ModelAttribute("user") User user, 
-    							@RequestParam(value="newPassword", required = false) String newPassword,
-    							@RequestParam(value="enabled", required = false, defaultValue = "off") String enabled,
-    							@RequestParam(value="roleAdmin", required = false, defaultValue = "off") String roleAdmin) {
+    public String saveEditedUser(@ModelAttribute("user") @Valid UserEditDto editUser,
+    							BindingResult result, 
+        				    	WebRequest request, 
+        				    	Errors errors)  {
     	
-    	//TODO userValidator i reject values
-
-    	if(newPassword != null && newPassword.equals("") == false) {
-    		user.setPassword(new BCryptPasswordEncoder().encode(newPassword));
-    	}
-    	
-    	System.out.println(roleAdmin);
-    	
-    	if(enabled.equals("on")) {
-    		user.setEnabled(true);
-    	} else {
-    		user.setEnabled(false);
-    	}
     	UserRole userRole = userRolesRepository.findOne(
-    								userRolesRepository.findRoleIdByUserId(user.getUserId()).get(0));
-  
-    	if(roleAdmin.equals("on")) {
-    		userRole.setRole("ROLE_ADMIN");
-    	} else {
-    		userRole.setRole("ROLE_USER");
-    	}
-    	userRolesRepository.save(userRole);
+    								userRolesRepository.findRoleIdByUserId(editUser.getUserId()).get(0));
     	
-    	userRepository.save(user);
-    	System.out.println("saveEditedUser");
-    	return "redirect:" + "/admin/users";
+    	try {
+    		User userBeforeEdit = userRepository.findOne(editUser.getUserId());
+    		if(userBeforeEdit.getUserName().equals(editUser.getUsername()) == false)  {
+    			//skoro nowa nazwa jest inna to trzeba sprawdzić
+    			//czy nie istnieje już użytkownik o tej nazwie
+    			if (userRepository.findByUserName(editUser.getUsername()) != null) {   
+		            throw new UserExistsException();
+		        }
+    	        
+    		}
+    		
+    		if(userBeforeEdit.getEmail().equals(editUser.getEmail())== false ) {
+    			//przypadek co wyżej tylko, że dla emaila
+    			if (userRepository.findByEmail(editUser.getEmail()) != null) {   
+    	            throw new EmailExistsException();
+    	        }
+    		}
+    		editUser.saveUser(userBeforeEdit);
+    		
+        	userRepository.save(userBeforeEdit);
+        	
+        	if(editUser.isAdmin()) {
+        		userRole.setRole("ROLE_ADMIN");
+        	} else {
+        		userRole.setRole("ROLE_USER");
+        	}
+        	userRolesRepository.save(userRole);
+        	
+    	} catch (EmailExistsException e) {
+            result.rejectValue("email", "message.regError", e.toString());
+        } catch (UserExistsException e) {
+            result.rejectValue("username", "message.regError", e.toString());
+        }
+    	
+    	if (result.hasErrors()) {
+            return "edit_user";
+        } 
+        else {
+        	return "redirect:" + "/admin/users";
+        }
     }
     
     @RequestMapping("/admin/users/deleteUser")
@@ -168,7 +195,7 @@ public class UserListController {
     
     @RequestMapping("/register/new")
     public String showRegistrationForm(WebRequest request, Model model) {
-        UserDto userDto = new UserDto();
+        UserRegisterDto userDto = new UserRegisterDto();
         model.addAttribute("userDto", userDto);
         
         return "register_new";
@@ -177,7 +204,7 @@ public class UserListController {
     @RequestMapping("/register/new/submit")
     public ModelAndView registerUserAccount(
     		
-    	@ModelAttribute("userDto") @Valid UserDto accountDto, 
+    	@ModelAttribute("userDto") @Valid UserRegisterDto accountDto, 
     	BindingResult result, 
     	WebRequest request, 
     	Errors errors) {
@@ -209,7 +236,7 @@ public class UserListController {
         }
     }
     
-    private User registerNewUserAccount(UserDto accountDto) 
+    private User registerNewUserAccount(UserRegisterDto accountDto) 
     	      throws EmailExistsException, UserExistsException {
 		    	if (userRepository.findByUserName(accountDto.getUsername()) != null) {   
 		            throw new UserExistsException();

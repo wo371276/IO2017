@@ -8,5 +8,9 @@ public class UserExistsException extends Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = 35009164236914411L;
-
+	
+	@Override
+	public String toString() {
+		return "Istnieje już użytkownik o takim loginie";
+	}
 }

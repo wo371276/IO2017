@@ -36,11 +36,14 @@
 			</div>
 			<div class="checkbox">
 				<label><input type="checkbox" id="enabled" name="enabled"
+				th:field="*{enabled}" 
 					th:checked="${enabled}" /> Aktywny</label>
 			</div>
+			
 			<div class="checkbox">
 				<label><input type="checkbox" id="roleAdmin"
-					name="isAdmin" th:checked="${isAdmin}" /> Admin</label>
+					th:field="*{admin}" 
+					name="admin" th:checked="${admin}" /> Admin</label>
 			</div>
 			<div class="alert alert-danger" th:each="error: ${#fields.errors('*')}"
          			th:text="${error}" >Validation error</div>
