@@ -12,26 +12,26 @@
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div class="col-md-4 col-md-offset-5">
 		<form action="#" th:action="@{/admin/users/newUser/submit}"
-			method="post" class="form-horizontal">
+			method="post" class="form-horizontal" th:object="${user}">
 			<div class="form-group">
 				<label for="login">Login:</label> <input type="text"
-					th:field="*{user.userName}" class="form-control" id="login" />
+					th:field="*{username}" class="form-control" id="login" />
 			</div>
 			<div class="form-group">
 				<label for="pwd">Hasło:</label> <input type="password"
-					th:field="*{user.password}" class="form-control" id="pwd" />
+					th:field="*{password}" class="form-control" id="pwd" />
 			</div>
 			<div class="form-group">
 				<label for="email">Adres email:</label> <input type="email"
-					th:field="*{user.email}" class="form-control" id="email" />
+					th:field="*{email}" class="form-control" id="email" />
 			</div>
 			<div class="form-group">
 				<label for="imie">Imię:</label> <input type="text"
-					th:field="*{user.name}" class="form-control" id="imie" />
+					th:field="*{name}" class="form-control" id="imie" />
 			</div>
 			<div class="form-group">
 				<label for="nazwisko">Nazwisko:</label> <input type="text"
-					th:field="*{user.surname}" name="_enabled" th:value="${enabled}"
+					th:field="*{surname}" name="_enabled" th:value="${enabled}"
 					class="form-control" id="nazwisko" />
 			</div>
 			<div class="checkbox">
@@ -40,8 +40,10 @@
 			</div>
 			<div class="checkbox">
 				<label><input type="checkbox" id="roleAdmin"
-					name="roleAdmin" th:checked="${roleAdmin}" /> Admin</label>
+					name="isAdmin" th:checked="${isAdmin}" /> Admin</label>
 			</div>
+			<div class="alert alert-danger" th:each="error: ${#fields.errors('*')}"
+         			th:text="${error}" >Validation error</div>
 			<button type="submit" class="btn btn-default">Zatwierdź</button>
 			<button type="reset" class="btn btn-default">Resetuj</button>
 		</form>

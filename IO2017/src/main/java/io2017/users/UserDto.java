@@ -34,6 +34,10 @@ public class UserDto {
     @NotEmpty(message="Pole nie może być puste")
     private String matchingPassword;
     
+    private boolean enabled = false;
+    
+    private boolean isAdmin = false;
+    
     public UserDto() {
     	
     }
@@ -96,5 +100,21 @@ public class UserDto {
 	public void setMatchingPassword(String matchingPassword) {
 		this.matchingPassword = matchingPassword;
 	}
-    
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
 }
