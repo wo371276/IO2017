@@ -41,21 +41,32 @@ public class QuizController {
 	}
 	
 	@RequestMapping("/quiz/flashcards")
-	public String quizFlashcards(Model model, @RequestParam("id") long id) {	
+	public String quizFlashcards(Model model, @RequestParam("id") long id,
+			@RequestParam(value = "mode", required=false, defaultValue="0") Integer mode) {
+		
 		Dictionary dictionary = dictionaryRepository.findOne(id);
 		List<Word> words = new LinkedList<Word>();
 		words.addAll(dictionary.getWords());
 		model.addAttribute("words", words);
 		model.addAttribute("wordsNumber", words.size());
-		model.addAttribute("mode", 0);
 		model.addAttribute("dictionaryName", dictionary.getName());
 		model.addAttribute("dictionaryCategory", dictionary.getCategory());
+		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
+		boolean hasWords = words.size() != 0 ? true : false;
+		model.addAttribute("hasWords", hasWords);
 		
 		String headText = Language.getLanguageType(dictionary.getLanguage()).getFlashCardsText();
 		String poPolsku = Language.poPolsku;
+		if(mode == 0) {
+			model.addAttribute("firstHeader", poPolsku);
+			model.addAttribute("secondHeader", headText);
+		} else {
+			model.addAttribute("firstHeader", headText);
+			model.addAttribute("secondHeader", poPolsku);
+		}
 		
-		model.addAttribute("firstHeader", poPolsku);
-		model.addAttribute("secondHeader", headText);
+		model.addAttribute("mode", mode);
+		model.addAttribute("changeMode", 1 - mode);
 		
 		return "quiz_flashcard";
 	}
