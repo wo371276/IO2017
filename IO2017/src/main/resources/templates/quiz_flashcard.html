@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<thymeleaf th:replace="fragments/head :: head" />
+
+<script>
+var obj = {
+	    'row1' : {
+	        'key1' : 'input1',
+	        'key2' : 'inpu2'
+	    },
+	    <th:block th:inline="text" th:each="word, iter : ${words}">
+	    '[[${iter.index}]]' : {
+	    	'firstLang' : '[[${word.polishWord}]]',
+	    	'secondLang' : '[[${word.foreignTranslation}]]',
+	    },
+	    </th:block>
+	 	
+	};
+	
+	var currentPage = 0;
+	var numberOfPages = <th:block th:inline="text"> [[${wordsNumber}]] </th:block>;
+	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
+	
+	function changeWords(id) {
+		if(mode == 0) {
+			document.getElementById('firstLanguage').innerHTML = obj[id].firstLang;
+			document.getElementById('secondLanguage').innerHTML = obj[id].secondLang;	
+		} else {
+			document.getElementById('firstLanguage').innerHTML = obj[id].secondLang;
+			document.getElementById('secondLanguage').innerHTML = obj[id].firstLang;
+		}
+		
+		hideTranslation();
+		
+		document.getElementById('pageNumber').innerHTML = id + 1;
+		
+		if(currentPage == 0) {
+		    document.getElementById('prevPg').style.display = 'none';
+		} else {
+			document.getElementById('prevPg').style.display = 'block';
+		}
+		
+		if(currentPage == numberOfPages) {
+		    document.getElementById('nextPg').style.display = 'none';
+		} else {
+			document.getElementById('nextPg').style.display = 'block';
+		}
+	}
+	
+	function showTranslation() {
+		document.getElementById('translation').style.display = 'none';
+		document.getElementById('secondLanguage').style.display = 'block';
+	}
+	
+	function hideTranslation() {
+		document.getElementById('translation').style.display = 'block';
+		document.getElementById('secondLanguage').style.display = 'none';
+	}
+	
+	function nextPage() {
+		currentPage++;
+		changeWords(currentPage);
+	}
+	
+	function previousPage() {
+		currentPage--;
+		changeWords(currentPage, 1);
+	}
+	
+	window.onload = function() {
+	  changeWords(0);
+	  numberOfPages--;
+	};
+
+</script>
+
+
+<title>Quiz fiszki</title>
+</head>
+<body>
+<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-8 col-md-offset-3">
+			<h2>Nazwa słownika: <span th:text="${dictionaryName}"></span> </h2>                  
+		  <div class="row">
+		    <div class="col-md-4">
+			    <span id="prevPg" style="float:right;" class="glyphicon glyphicon-arrow-left"
+		    			 onclick="previousPage();" />
+		    </div>
+		    <div class="col-md-4">
+		    	 <div class="card-block">
+		           <h2 class="card-title">Card title</h2>
+		           <h4 class="card-title">Słówko <span id="pageNumber">X</span> / <span th:text="${wordsNumber}"></span>  </h4>
+		           <p id="firstLanguage" style="height: 170px; border: 1px solid;" class="card-text">coś po polsku</p>
+		           <p style="height: 170px; border: 1px solid;" class="card-text">
+		           		<span id="translation" onclick="showTranslation();">Pokaż tłumaczenie</span>
+						<span id="secondLanguage">coś po ang</span>
+					</p>
+		    </div>
+		    </div>
+		    <div class="col-md-4">
+		    	
+		    	<span id="nextPg" style="float:left;" class="glyphicon glyphicon-arrow-right"
+		    			 onclick="nextPage();" />
+		    </div>
+		  </div>
+	</div>
+	
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>
