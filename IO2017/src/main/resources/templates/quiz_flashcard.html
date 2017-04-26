@@ -85,26 +85,33 @@ var obj = {
 	<div th:replace="fragments/header :: header"></div>
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div class="col-md-8 col-md-offset-3">
-			<h2>Nazwa słownika: <span th:text="${dictionaryName}"></span> </h2>                  
-		  <div class="row">
-		    <div class="col-md-4">
-			    <span id="prevPg" style="float:right;" class="glyphicon glyphicon-arrow-left"
+			<h2>Nazwa słownika: <span th:text="${dictionaryName}"></span> </h2>
+			<h3 class="card-title">Słówko <span id="pageNumber">X</span> / <span th:text="${wordsNumber}"></span>  </h3>          
+		  <div class="row" style="height: 600px;">
+		    <div class="col-md-4" style="height: 500px;">
+			    <span id="prevPg" style="float:right; margin-top: 235px; font-size: 30px;" class="glyphicon glyphicon-arrow-left"
 		    			 onclick="previousPage();" />
 		    </div>
-		    <div class="col-md-4">
-		    	 <div class="card-block">
-		           <h2 class="card-title">Card title</h2>
-		           <h4 class="card-title">Słówko <span id="pageNumber">X</span> / <span th:text="${wordsNumber}"></span>  </h4>
-		           <p id="firstLanguage" style="height: 170px; border: 1px solid;" class="card-text">coś po polsku</p>
-		           <p style="height: 170px; border: 1px solid;" class="card-text">
-		           		<span id="translation" onclick="showTranslation();">Pokaż tłumaczenie</span>
-						<span id="secondLanguage">coś po ang</span>
-					</p>
-		    </div>
-		    </div>
-		    <div class="col-md-4">
+			<div class="col-md-4" style="height: 500px;">
+			    <div class="card" style="height: 100%;">
+			        <div class="card-block" style="height: 50%;">
+			            <h2 class="card-title" th:text="${firstHeader}">Card title</h2>
+			            <p id="firstLanguage" class="card-text" style="font-size:25px;">coś po polsku</p>
+			        </div>
+			        
+			        <div style="border-top: 1px solid #8c8b8b; height: 50%;"  class="card-block" >
+			            <h2 class="card-title" th:text="${secondHeader}">Card title</h2>
+			            <p class="card-text">
+			                <span id="translation" type="button" class="btn btn-success" onclick="showTranslation();">Pokaż tłumaczenie</span>
+			                <span id="secondLanguage" style="font-size:25px;">coś po ang</span>
+			            </p>
+			        </div>
+			
+			    </div>
+			</div>
+		    <div class="col-md-4" style="height: 500px;">
 		    	
-		    	<span id="nextPg" style="float:left;" class="glyphicon glyphicon-arrow-right"
+		    	<span id="nextPg" style="float:left; margin-top: 235px; font-size: 30px;" class="glyphicon glyphicon-arrow-right"
 		    			 onclick="nextPage();" />
 		    </div>
 		  </div>

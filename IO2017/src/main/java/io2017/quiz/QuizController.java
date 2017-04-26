@@ -14,6 +14,7 @@ import io2017.dictionaries.Dictionary;
 import io2017.dictionaries.DictionaryRepository;
 import io2017.dictionaries.Word;
 import io2017.dictionaries.WordRepository;
+import io2017.helpers.Language;
 import io2017.users.UserRepository;
 import io2017.users.UserRolesRepository;
 
@@ -50,6 +51,11 @@ public class QuizController {
 		model.addAttribute("dictionaryName", dictionary.getName());
 		model.addAttribute("dictionaryCategory", dictionary.getCategory());
 		
+		String headText = Language.getLanguageType(dictionary.getLanguage()).getFlashCardsText();
+		String poPolsku = Language.poPolsku;
+		
+		model.addAttribute("firstHeader", poPolsku);
+		model.addAttribute("secondHeader", headText);
 		
 		return "quiz_flashcard";
 	}
