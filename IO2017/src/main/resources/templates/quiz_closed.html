@@ -1,0 +1,23 @@
+!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<thymeleaf th:replace="fragments/head :: head" />
+<title>Quiz fiszki</title>
+</head>
+<body>
+<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div  class="col-md-8 col-md-offset-3">
+	<h1> tu się uczymy języka</h1>
+	<!-- <form th:action="@{/login}" method="post" class="form-horizontal">
+			<select name="mode">
+			<option>Polski na <span th:text="${dictionaryLanguage}"></span></option>
+			</select>
+	</div> -->
+	</main>
+	</body>
+	</html>
+	
