@@ -19,7 +19,7 @@ import io2017.users.UserRepository;
 import io2017.users.UserRolesRepository;
 
 @Controller
-public class ClosedQuizController {
+public class QuizOptionsController {
 	DictionaryRepository dictionaryRepository;
 	UserRepository userRepository;
 	CategoriesRepository categoriesRepository;
@@ -27,7 +27,7 @@ public class ClosedQuizController {
 	UserRolesRepository userRolesRepository;
 	
 	@Autowired
-	public ClosedQuizController(DictionaryRepository dictionaryRepository, 
+	public QuizOptionsController(DictionaryRepository dictionaryRepository, 
 						UserRepository userRepository,
 						CategoriesRepository categoriesRepository,
 						WordRepository wordRepository,
@@ -39,8 +39,8 @@ public class ClosedQuizController {
 		this.userRolesRepository = userRolesRepository;
 	}
 	
-	@RequestMapping("/quiz/closed")
-	public String quizClosed(Model model, @RequestParam("id") long id) {
+	@RequestMapping("/quiz/options")
+	public String quizOptions(Model model, @RequestParam("id") long id) {
 			
 		Dictionary dictionary = dictionaryRepository.findOne(id);
 		List<Word> words = new LinkedList<Word>();
@@ -48,6 +48,18 @@ public class ClosedQuizController {
 		model.addAttribute("wordsNumber", words.size());
 		model.addAttribute("dictionaryLanguage", dictionary.getLanguage());
 		
-		return "quiz_closed";
+		return "quiz_options";
+	}
+	
+	@RequestMapping("/quiz/reditrect")
+	public String quizRedirect(Model model, @RequestParam("option") Integer option,
+			@RequestParam("id") long id,
+			@RequestParam("mode") Integer mode,
+			@RequestParam("number") Integer number) {
+		
+		if(option == 0)
+			return QuizController.quizOpen(model, id, option, mode, number);
+		
+		return QuizController.quizClosed(model, id, option, mode, number);
 	}
 }

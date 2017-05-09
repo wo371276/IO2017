@@ -29,9 +29,9 @@
 		          <ul>
 		          	<li th:each="dictionary : ${category.dictionaries}">
 		          		<span th:text="${dictionary.name}"></span>
-		          		<a th:href="@{/quiz/flashcards(id=${dictionary.dictionaryId})}" class="btn btn-primary" role="button">Fiszki</a>
-		          		<a th:href="@{/quiz/closed(id=${dictionary.dictionaryId})}" class="btn btn-primary" role="button">Pytania zamknięte</a>
-		          	</li>
+		          		<a th:href="@{/quiz/flashcards(id=${dictionary.dictionaryId})}" class="btn btn-primary" role="button">Rozpocznij naukę</a>
+		    		    <a th:href="@{/quiz/options(id=${dictionary.dictionaryId})}" class="btn btn-primary" role="button">Rozwiąż quiz</a>
+		    		          	</li>
 		          </ul>
 		      </div>
 			  </div>

@@ -70,4 +70,19 @@ public class QuizController {
 		
 		return "quiz_flashcard";
 	}
+	
+	public static String quizClosed(Model model, long id, Integer option, Integer mode, Integer number){
+		//TODO
+		//to jest metoda statyczna, bez mapowania.
+		//Ma zwracać Twoją stronę z quizem zamkniętmy. 
+		//Może trochę nie pasuje konwencją do reszty, możesz poprawić jak chcesz
+		//Może przydałoby się tu włożyć metodę z QuizOptionsController,
+		//a za to wyjąć quizClosed i quizOpen gdzie indziej
+		return "/home";
+	}
+	
+	public static String quizOpen(Model model, long id, Integer option, Integer mode, Integer number){
+		//TODO jak wyżej
+		return "/home";
+	}
 }
