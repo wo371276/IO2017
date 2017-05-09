@@ -4,34 +4,45 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <thymeleaf th:replace="fragments/head :: head" />
-
 <script>
-var obj = {
-	    <th:block th:inline="text" th:each="word, iter : ${words}">
+	var obj = {
+	    <th:block th:inline="text" th:each="question, iter : ${questions}">
 	    '[[${iter.index}]]' : {
-	    	'firstLang' : '[[${word.polishWord}]]',
-	    	'secondLang' : '[[${word.foreignTranslation}]]',
+	    	'query' : '[[${question.query}]]',
+	    	'answer' : '[[${question.answer}]]',
+	    	'a' : '[[${question.a}]]',
+	    	'b' : '[[${question.b}]]',
+	    	'c' : '[[${question.c}]]',
+	    	'd' : '[[${question.d}]]',
+	    	'choice' : 'a',
+	    	'result' : "",
 	    },
 	    </th:block>
 	 	
 	};
-	
+
 	var currentPage = 0;
-	var numberOfPages = <th:block th:inline="text"> [[${wordsNumber}]] </th:block>;
+	var numberOfPages = <th:block th:inline="text"> [[${questionsNumber}]] </th:block>;
 	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
 	
 	function changeWords(id) {
-		if(mode == 0) {
-			document.getElementById('firstLanguage').innerHTML = obj[id].firstLang;
-			document.getElementById('secondLanguage').innerHTML = obj[id].secondLang;	
-		} else {
-			document.getElementById('firstLanguage').innerHTML = obj[id].secondLang;
-			document.getElementById('secondLanguage').innerHTML = obj[id].firstLang;
-		}
+		document.getElementById('query').innerHTML = obj[id].query;
 		
-		hideTranslation();
-		
+		document.getElementById('a').value = obj[id].a;	
+		document.getElementById('for_a').innerHTML = obj[id].a;	
+		document.getElementById('b').value = obj[id].b;	
+		document.getElementById('for_b').innerHTML = obj[id].b;	
+		document.getElementById('c').value = obj[id].c;	
+		document.getElementById('for_c').innerHTML = obj[id].c;	
+		document.getElementById('d').value = obj[id].d;
+		document.getElementById('for_d').innerHTML = obj[id].d;	
+		/* document.getElementById('a_option').value = obj[id].a;				
+		document.getElementById('b_option').value = obj[id].b;				
+		document.getElementById('c_option').value = obj[id].c;				
+		document.getElementById('d_option').value = obj[id].d;	 */
 		document.getElementById('pageNumber').innerHTML = id + 1;
+		
+		document.getElementById(obj[currentPage].choice).checked = true;
 		
 		if(currentPage == 0) {
 		    document.getElementById('prevPg').style.display = 'none';
@@ -46,35 +57,108 @@ var obj = {
 		}
 	}
 	
-	function showTranslation() {
-		document.getElementById('translation').style.display = 'none';
-		document.getElementById('secondLanguage').style.display = 'block';
-	}
-	
-	function hideTranslation() {
-		document.getElementById('translation').style.display = 'block';
-		document.getElementById('secondLanguage').style.display = 'none';
+	function submitTranslation() {
+		obj[currentPage].choice = document.querySelector('input[name="pytanie"]:checked').id;
+		obj[currentPage].result = document.querySelector('input[name="pytanie"]:checked').value;
 	}
 	
 	function nextPage() {
-		currentPage++;
-		changeWords(currentPage);
+		if (currentPage != numberOfPages) {
+			submitTranslation();
+			currentPage++;
+			changeWords(currentPage);
+		}
 	}
 	
 	function previousPage() {
-		currentPage--;
-		changeWords(currentPage);
+		if (currentPage != 0) {
+			submitTranslation();
+			currentPage--;
+			changeWords(currentPage);
+		}
+	}
+	
+	function previousAnswer() {
+		switch (document.querySelector('input[name="pytanie"]:checked').id) {
+            case 'b':  document.getElementById('a').checked = true;
+                     break;
+            case 'c':  document.getElementById('b').checked = true;
+                     break;
+            case 'd':  document.getElementById('c').checked = true;
+                     break;
+            default: break;
+		}
+	}
+	
+	function nextAnswer() {
+		switch (document.querySelector('input[name="pytanie"]:checked').id) {
+	        case 'a':  document.getElementById('b').checked = true;
+	                 break;
+	        case 'b':  document.getElementById('c').checked = true;
+	                 break;
+	        case 'c':  document.getElementById('d').checked = true;
+	                 break;
+	        default: break;
+		}
+	}
+	
+	function resultOf(id) {
+		return obj[id].answer == obj[id].result;
+	}
+	
+	function computeResult(id, res) {
+		if(id > numberOfPages) {
+		    return res;
+		}
+		if (resultOf(id)) {
+			return computeResult(id+1,res+1);
+		} else {
+			return computeResult(id+1,res);
+		}
+	}
+	
+	function showResult() {
+		submitTranslation();
+ 		window.alert("Twój wynik to: " + computeResult(0,0) + "/" + (numberOfPages+1));
 	}
 	
 	window.onload = function() {
 		numberOfPages--;
 		changeWords(0);
 	};
-
+	
+	document.addEventListener("keyup", function(event) {
+	    event.preventDefault();
+	    
+	    if (event.keyCode == 13) {
+	    	if (currentPage == numberOfPages) {
+	    		showResult();
+	    	} else {
+	        	nextPage();    		
+	    	}
+	    }
+	    
+	    if (event.keyCode == 37) {
+	        previousPage();
+	    }
+	    
+	    if (event.keyCode == 38) {
+	        previousAnswer();
+	    }
+	    
+	    if (event.keyCode == 39) {
+	    	nextPage();
+	    }
+	    
+	    if (event.keyCode == 40) {
+	        nextAnswer();
+	    }
+	    
+	});
 </script>
 
 
-<title>Quiz fiszki</title>
+<title>Quiz zamknięty</title>
 </head>
 <body>
 <main class="wrapper">
@@ -82,39 +166,37 @@ var obj = {
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div  class="col-md-8 col-md-offset-3">
 			<h2>Nazwa słownika: <span th:text="${dictionaryName}"></span> </h2>
-			<h3 th:if="${hasWords}" class="card-title">Słówko <span id="pageNumber">X</span> / <span th:text="${wordsNumber}"></span>  </h3>
-			<a role="button" class="btn btn-warning" th:if="${hasWords}"
-				th:href="@{/quiz/flashcards(id=${dictionaryId}, mode=${changeMode})}">Zmień kierunek</a>
-		  <div th:if="${hasWords}" class="row" style="height: 600px;">
-		    <div class="col-md-4" style="height: 500px;">
-			    <span id="prevPg" style="color: indianred; float:right; margin-top: 235px; font-size: 30px;" class="glyphicon glyphicon-arrow-left"
+			<h3 th:if="${hasEnoughWords}" class="card-title">Pytanie <span id="pageNumber">X</span> / <span th:text="${questionsNumber}"></span>  </h3>
+			<div th:if="${hasEnoughWords}" class="row" style="height: 250px;">
+		    <div class="col-md-4" style="height: 200px;">
+			    <span id="prevPg" style="color: indianred; float:right; margin-top: 95px; font-size: 30px;" class="glyphicon glyphicon-arrow-left"
 		    			 onclick="previousPage();" />
 		    </div>
-			<div class="col-md-4" style="height: 500px;">
-			    <div class="card" style="height: 100%;">
-			        <div class="card-block" style="height: 50%;">
-			            <h2 class="card-title" th:text="${firstHeader}">Card title</h2>
-			            <p id="firstLanguage" class="card-text" style="font-size:25px;">coś po polsku</p>
-			        </div>
-			        
-			        <div style="border-top: 1px solid #8c8b8b; height: 50%;"  class="card-block" >
-			            <h2 class="card-title" th:text="${secondHeader}">Card title</h2>
-			            <p class="card-text">
-			                <span id="translation" type="button" class="btn btn-success" onclick="showTranslation();">Pokaż tłumaczenie</span>
-			                <span id="secondLanguage" style="font-size:25px;">coś po ang</span>
-			            </p>
-			        </div>
-			
-			    </div>
+			<div class="col-md-4" style="height: 200px;">
+				<h2 class="card-title">Przetłumacz</h2>
+			    <p id="query" class="card-text" style="font-size:25px;">coś po polsku</p>
+				<div>
+					<input type="radio" id="a" name="pytanie" value="a" />
+						<span id="for_a">Opcja 1</span><br/>
+					<input type="radio" id="b" name="pytanie" value="b" />
+						<span id="for_b">Opcja 2</span><br/>
+					<input type="radio" id="c" name="pytanie" value="c" />
+						<span id="for_c">Opcja 3</span><br/>
+					<input type="radio" id="d" name="pytanie" value="d" />
+						<span id="for_d">Opcja 4</span><br/>
+				</div>			    
 			</div>
-		    <div class="col-md-4" style="height: 500px;">
+		    <div class="col-md-4" style="height: 200px;">
 		    	
-		    	<span id="nextPg" style="color: indianred; float:left; margin-top: 235px; font-size: 30px;" class="glyphicon glyphicon-arrow-right"
+		    	<span id="nextPg" style="color: indianred; float:left; margin-top: 95px; font-size: 30px;" class="glyphicon glyphicon-arrow-right"
 		    			 onclick="nextPage();" />
 		    </div>
+		    <div>
+		    	<span id="show_result" type="button" class="btn btn-success" onclick="showResult();">Pokaż wynik</span>
+		    </div>
 		  </div>
-		  	<div th:unless="${hasWords}" class="col-md-12" style="height: 500px;">
-				<h4>Słownik nie zawiera żadnych słówek</h4>
+		  	<div th:unless="${hasEnoughWords}" class="col-md-12" style="height: 200px;">
+				<h4>Słownik nie zawiera wystarczjąco słówek</h4>
 			</div>
 	</div>
 	

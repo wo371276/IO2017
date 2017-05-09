@@ -57,20 +57,43 @@ var obj = {
 	}
 	
 	function nextPage() {
-		currentPage++;
-		changeWords(currentPage);
+		if (currentPage != numberOfPages) {
+			currentPage++;
+			changeWords(currentPage);
+		}
 	}
 	
 	function previousPage() {
-		currentPage--;
-		changeWords(currentPage);
+		if (currentPage != 0) {
+			currentPage--;
+			changeWords(currentPage);
+		}
 	}
 	
 	window.onload = function() {
 		numberOfPages--;
 		changeWords(0);
 	};
-
+    
+    document.addEventListener("keyup", function(event) {
+        event.preventDefault();
+        
+        if (event.keyCode == 13) {
+    		if (document.getElementById('translation').style.display == 'block') {
+    			showTranslation();
+    		} else {
+    			hideTranslation();
+    		}
+        }
+        
+        if (event.keyCode == 37) {
+            previousPage();
+        }
+        
+        if (event.keyCode == 39) {
+        	nextPage();
+        }
+    });
 </script>
 
 

@@ -22,9 +22,9 @@
 	
 	function changeWords(id) {
 		if(mode == 0) {
-			document.getElementById('firstLanguage').innerHTML = obj[id].firstLang;
+			document.getElementById('query').innerHTML = obj[id].firstLang;
 		} else {
-			document.getElementById('firstLanguage').innerHTML = obj[id].secondLang;
+			document.getElementById('query').innerHTML = obj[id].secondLang;
 		}
 		
 		document.getElementById('translated').value = obj[id].result;				
@@ -96,21 +96,21 @@
     event.preventDefault();
     
     if (event.keyCode == 13) {
-    	if (currentPage == numberOfPages) {
-    		showResult();
-    	} else {
-        	nextPage();    		
-    	}
-    }
-    
-    if (event.keyCode == 38) {
-        previousPage();
-    }
-    
-    if (event.keyCode == 40) {
-    	nextPage();
-    }
-});
+	    	if (currentPage == numberOfPages) {
+	    		showResult();
+	    	} else {
+	        	nextPage();    		
+	    	}
+	    }
+	    
+	    if (event.keyCode == 37) {
+	        previousPage();
+	    }
+	    
+	    if (event.keyCode == 39) {
+	    	nextPage();
+	    }
+	});
 </script>
 
 
@@ -130,7 +130,7 @@
 		    </div>
 			<div class="col-md-4" style="height: 200px;">
 				<h2 class="card-title">Przetłumacz</h2>
-			    <p id="firstLanguage" class="card-text" style="font-size:25px;">coś po polsku</p>
+			    <p id="query" class="card-text" style="font-size:25px;">coś po polsku</p>
 				<input type="text" id="translated" class="form-control" />			    
 			</div>
 		    <div class="col-md-4" style="height: 200px;">

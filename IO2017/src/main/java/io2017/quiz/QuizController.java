@@ -1,5 +1,6 @@
 package io2017.quiz;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -79,26 +80,16 @@ public class QuizController {
 		Dictionary dictionary = dictionaryRepository.findOne(id);
 		List<Word> words = new LinkedList<Word>();
 		words.addAll(dictionary.getWords());
-		model.addAttribute("words", words);
-		model.addAttribute("wordsNumber", words.size());
+		List<QuestionABCD> questions = QuestionABCD.getQuerySet(words,number,mode);
+		model.addAttribute("questions", questions);
+		model.addAttribute("questionsNumber", questions.size());
 		model.addAttribute("dictionaryName", dictionary.getName());
 		model.addAttribute("dictionaryCategory", dictionary.getCategory());
 		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
-		boolean hasWords = words.size() != 0 ? true : false;
-		model.addAttribute("hasWords", hasWords);
-		
-		String headText = Language.getLanguageType(dictionary.getLanguage()).getFlashCardsText();
-		String poPolsku = Language.poPolsku;
-		if(mode == 0) {
-			model.addAttribute("firstHeader", poPolsku);
-			model.addAttribute("secondHeader", headText);
-		} else {
-			model.addAttribute("firstHeader", headText);
-			model.addAttribute("secondHeader", poPolsku);
-		}
+		boolean hasEnoughWords = words.size() > 3 ? true : false;
+		model.addAttribute("hasEnoughWords", hasEnoughWords);
 		
 		model.addAttribute("mode", mode);
-		model.addAttribute("changeMode", 1 - mode);
 		
 		return "quiz_abcd";
 	}
@@ -111,6 +102,8 @@ public class QuizController {
 		Dictionary dictionary = dictionaryRepository.findOne(id);
 		List<Word> words = new LinkedList<Word>();
 		words.addAll(dictionary.getWords());
+		Collections.shuffle(words);
+		words = words.subList(0, number);
 		model.addAttribute("words", words);
 		model.addAttribute("wordsNumber", words.size());
 		model.addAttribute("dictionaryName", dictionary.getName());
@@ -119,18 +112,7 @@ public class QuizController {
 		boolean hasWords = words.size() != 0 ? true : false;
 		model.addAttribute("hasWords", hasWords);
 		
-		String headText = Language.getLanguageType(dictionary.getLanguage()).getFlashCardsText();
-		String poPolsku = Language.poPolsku;
-		if(mode == 0) {
-			model.addAttribute("firstHeader", poPolsku);
-			model.addAttribute("secondHeader", headText);
-		} else {
-			model.addAttribute("firstHeader", headText);
-			model.addAttribute("secondHeader", poPolsku);
-		}
-		
 		model.addAttribute("mode", mode);
-		model.addAttribute("changeMode", 1 - mode);
 		
 		return "quiz_open";
 	}
