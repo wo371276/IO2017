@@ -47,19 +47,8 @@ public class QuizOptionsController {
 		words.addAll(dictionary.getWords());
 		model.addAttribute("wordsNumber", words.size());
 		model.addAttribute("dictionaryLanguage", dictionary.getLanguage());
+		model.addAttribute("id", id);
 		
 		return "quiz_options";
-	}
-	
-	@RequestMapping("/quiz/reditrect")
-	public String quizRedirect(Model model, @RequestParam("option") Integer option,
-			@RequestParam("id") long id,
-			@RequestParam("mode") Integer mode,
-			@RequestParam("number") Integer number) {
-		
-		if(option == 0)
-			return QuizController.quizOpen(model, id, option, mode, number);
-		
-		return QuizController.quizClosed(model, id, option, mode, number);
 	}
 }

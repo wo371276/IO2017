@@ -71,18 +71,67 @@ public class QuizController {
 		return "quiz_flashcard";
 	}
 	
-	public static String quizClosed(Model model, long id, Integer option, Integer mode, Integer number){
-		//TODO
-		//to jest metoda statyczna, bez mapowania.
-		//Ma zwracać Twoją stronę z quizem zamkniętmy. 
-		//Może trochę nie pasuje konwencją do reszty, możesz poprawić jak chcesz
-		//Może przydałoby się tu włożyć metodę z QuizOptionsController,
-		//a za to wyjąć quizClosed i quizOpen gdzie indziej
-		return "/home";
+	@RequestMapping("/quiz/closed")
+	public String quizClosed(Model model, @RequestParam("id") long id,
+			@RequestParam(value = "mode", required=false, defaultValue="0") Integer mode,
+			@RequestParam(value = "number") Integer number) {
+		
+		Dictionary dictionary = dictionaryRepository.findOne(id);
+		List<Word> words = new LinkedList<Word>();
+		words.addAll(dictionary.getWords());
+		model.addAttribute("words", words);
+		model.addAttribute("wordsNumber", words.size());
+		model.addAttribute("dictionaryName", dictionary.getName());
+		model.addAttribute("dictionaryCategory", dictionary.getCategory());
+		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
+		boolean hasWords = words.size() != 0 ? true : false;
+		model.addAttribute("hasWords", hasWords);
+		
+		String headText = Language.getLanguageType(dictionary.getLanguage()).getFlashCardsText();
+		String poPolsku = Language.poPolsku;
+		if(mode == 0) {
+			model.addAttribute("firstHeader", poPolsku);
+			model.addAttribute("secondHeader", headText);
+		} else {
+			model.addAttribute("firstHeader", headText);
+			model.addAttribute("secondHeader", poPolsku);
+		}
+		
+		model.addAttribute("mode", mode);
+		model.addAttribute("changeMode", 1 - mode);
+		
+		return "quiz_abcd";
 	}
 	
-	public static String quizOpen(Model model, long id, Integer option, Integer mode, Integer number){
-		//TODO jak wyżej
-		return "/home";
+	@RequestMapping("/quiz/open")
+	public String quizOpen(Model model, @RequestParam("id") long id,
+			@RequestParam(value = "mode", required=false, defaultValue="0") Integer mode,
+			@RequestParam(value = "number") Integer number) {
+		
+		Dictionary dictionary = dictionaryRepository.findOne(id);
+		List<Word> words = new LinkedList<Word>();
+		words.addAll(dictionary.getWords());
+		model.addAttribute("words", words);
+		model.addAttribute("wordsNumber", words.size());
+		model.addAttribute("dictionaryName", dictionary.getName());
+		model.addAttribute("dictionaryCategory", dictionary.getCategory());
+		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
+		boolean hasWords = words.size() != 0 ? true : false;
+		model.addAttribute("hasWords", hasWords);
+		
+		String headText = Language.getLanguageType(dictionary.getLanguage()).getFlashCardsText();
+		String poPolsku = Language.poPolsku;
+		if(mode == 0) {
+			model.addAttribute("firstHeader", poPolsku);
+			model.addAttribute("secondHeader", headText);
+		} else {
+			model.addAttribute("firstHeader", headText);
+			model.addAttribute("secondHeader", poPolsku);
+		}
+		
+		model.addAttribute("mode", mode);
+		model.addAttribute("changeMode", 1 - mode);
+		
+		return "quiz_open";
 	}
 }

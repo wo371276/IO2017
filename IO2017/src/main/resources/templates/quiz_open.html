@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<thymeleaf th:replace="fragments/head :: head" />
+<script>
+	var obj = {
+	    <th:block th:inline="text" th:each="word, iter : ${words}">
+	    '[[${iter.index}]]' : {
+	    	'firstLang' : '[[${word.polishWord}]]',
+	    	'secondLang' : '[[${word.foreignTranslation}]]',
+	    	'result' : "",
+	    },
+	    </th:block>
+	 	
+	};
+
+	var currentPage = 0;
+	var numberOfPages = <th:block th:inline="text"> [[${wordsNumber}]] </th:block>;
+	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
+	
+	function changeWords(id) {
+		if(mode == 0) {
+			document.getElementById('firstLanguage').innerHTML = obj[id].firstLang;
+		} else {
+			document.getElementById('firstLanguage').innerHTML = obj[id].secondLang;
+		}
+		
+		document.getElementById('translated').value = obj[id].result;				
+		document.getElementById('pageNumber').innerHTML = id + 1;
+		
+		if(currentPage == 0) {
+		    document.getElementById('prevPg').style.display = 'none';
+		} else {
+			document.getElementById('prevPg').style.display = 'block';
+		}
+		
+		if(currentPage == numberOfPages) {
+		    document.getElementById('nextPg').style.display = 'none';
+		} else {
+			document.getElementById('nextPg').style.display = 'block';
+		}
+	}
+	
+	function submitTranslation() {
+		obj[currentPage].result = document.getElementById('translated').value;
+	}
+	
+	function nextPage() {
+		if (currentPage != numberOfPages) {
+			submitTranslation();
+			currentPage++;
+			changeWords(currentPage);
+		}
+	}
+	
+	function previousPage() {
+		if (currentPage != 0) {
+			submitTranslation();
+			currentPage--;
+			changeWords(currentPage);
+		}
+	}
+	
+	function resultOf(id) {
+		if(mode == 0) {
+			return obj[id].secondLang == obj[id].result;
+		} else {
+			return obj[id].firstLang == obj[id].result;
+		}
+	}
+	
+	function computeResult(id, res) {
+		if(id > numberOfPages) {
+		    return res;
+		}
+		if (resultOf(id)) {
+			return computeResult(id+1,res+1);
+		} else {
+			return computeResult(id+1,res);
+		}
+	}
+	
+	function showResult() {
+		submitTranslation();
+ 		window.alert(computeResult(0,0));
+	}
+	
+	window.onload = function() {
+		numberOfPages--;
+		changeWords(0);
+	};
+	
+	document.addEventListener("keyup", function(event) {
+    event.preventDefault();
+    
+    if (event.keyCode == 13) {
+    	if (currentPage == numberOfPages) {
+    		showResult();
+    	} else {
+        	nextPage();    		
+    	}
+    }
+    
+    if (event.keyCode == 38) {
+        previousPage();
+    }
+    
+    if (event.keyCode == 40) {
+    	nextPage();
+    }
+});
+</script>
+
+
+<title>Quiz otwarty</title>
+</head>
+<body>
+<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div  class="col-md-8 col-md-offset-3">
+			<h2>Nazwa słownika: <span th:text="${dictionaryName}"></span> </h2>
+			<h3 th:if="${hasWords}" class="card-title">Pytanie <span id="pageNumber">X</span> / <span th:text="${wordsNumber}"></span>  </h3>
+			<div th:if="${hasWords}" class="row" style="height: 250px;">
+		    <div class="col-md-4" style="height: 200px;">
+			    <span id="prevPg" style="color: indianred; float:right; margin-top: 95px; font-size: 30px;" class="glyphicon glyphicon-arrow-left"
+		    			 onclick="previousPage();" />
+		    </div>
+			<div class="col-md-4" style="height: 200px;">
+				<h2 class="card-title">Przetłumacz</h2>
+			    <p id="firstLanguage" class="card-text" style="font-size:25px;">coś po polsku</p>
+				<input type="text" id="translated" class="form-control" />			    
+			</div>
+		    <div class="col-md-4" style="height: 200px;">
+		    	
+		    	<span id="nextPg" style="color: indianred; float:left; margin-top: 95px; font-size: 30px;" class="glyphicon glyphicon-arrow-right"
+		    			 onclick="nextPage();" />
+		    </div>
+		    <div>
+		    	<span id="show_result" type="button" class="btn btn-success" onclick="showResult();">Pokaż wynik</span>
+		    </div>
+		  </div>
+		  	<div th:unless="${hasWords}" class="col-md-12" style="height: 200px;">
+				<h4>Słownik nie zawiera żadnych słówek</h4>
+			</div>
+	</div>
+	
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>
