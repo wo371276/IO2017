@@ -117,9 +117,31 @@
 		}
 	}
 	
+	// kod niezbędny aby spring wiedział, że jesteśmy uwierzytelnieni
+	$(function () {
+		  var token = $("meta[name='_csrf']").attr("content");
+		  var header = $("meta[name='_csrf_header']").attr("content");
+		  $(document).ajaxSend(function(e, xhr, options) {
+		    xhr.setRequestHeader(header, token);
+		  });
+		});
+	
 	function showResult() {
 		submitTranslation();
- 		window.alert("Twój wynik to: " + computeResult(0,0) + "/" + (numberOfPages+1));
+ 		//window.alert("Twój wynik to: " + computeResult(0,0) + "/" + (numberOfPages+1));
+ 		submitResult(computeResult(0,0));
+	}
+
+	function submitResult(result) {
+		<th:block th:inline="text">
+			var id = [[${dictionaryId}]];
+			var mode = [[${mode}]];
+		</th:block>
+		$.ajax({
+		     type: "POST",
+		     url: "../api/submitScore",
+		     data: { score: result, dictionaryId: id, modeType: mode}
+		})
 	}
 	
 	window.onload = function() {
