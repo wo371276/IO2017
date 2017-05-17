@@ -50,6 +50,10 @@ public class Dictionary implements Serializable {
 	@Column(name = "language")
 	private String language;
 	
+	@NotNull
+	@Column(name = "difficulty")
+	private int difficulty;
+	
 	@OneToMany(mappedBy = "dictionary", cascade = CascadeType.ALL)
 	private Set<Word> words;
 
@@ -100,5 +104,14 @@ public class Dictionary implements Serializable {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	public int getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(int difficulty) {
+		this.difficulty = difficulty;
+	}
+	
 	
 }

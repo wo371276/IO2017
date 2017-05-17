@@ -25,8 +25,10 @@ public class DictionaryDto {
 	private String language;
 	private Set<Word> words;
 	
+	private int difficulty;
+	
 	public DictionaryDto(Long dictionaryId, Category category, User user, String name, String language,
-			Set<Word> words) {
+			Set<Word> words, int difficulty) {
 		super();
 		this.dictionaryId = dictionaryId;
 		this.category = category;
@@ -34,6 +36,7 @@ public class DictionaryDto {
 		this.name = name;
 		this.language = language;
 		this.words = words;
+		this.difficulty = difficulty;
 	}
 
 	public DictionaryDto() {
@@ -47,6 +50,7 @@ public class DictionaryDto {
 		this.name = dictionary.getName();
 		this.language = dictionary.getLanguage();
 		this.words = dictionary.getWords();
+		this.difficulty = dictionary.getDifficulty();
 	}
 
 	public Long getDictionaryId() {
@@ -97,12 +101,21 @@ public class DictionaryDto {
 		this.words = words;
 	}
 	
+	public int getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(int difficulty) {
+		this.difficulty = difficulty;
+	}
+
 	public Dictionary buildNewDictionary() {
 		Dictionary dictionary = new Dictionary();
 		dictionary.setCategory(this.getCategory());
 		dictionary.setName(this.name);
 		dictionary.setUser(this.user);
 		dictionary.setLanguage(this.language);
+		dictionary.setDifficulty(this.difficulty);
 		
 		return dictionary;
 	}

@@ -30,6 +30,7 @@
 				<th>ID</th>
 				<th>Nazwa</th>
 				<th>Język</th>
+				<th>Trudność</th>
 				<th>Nazwa kategorii</th>
 				<th th:unless="${isNotAdminPage}" >Właściciel</th>
 				<th>Edytuj słówka</th>
@@ -40,6 +41,7 @@
 				<td th:text="${dictionary.dictionaryId}"></td>
 				<td th:text="${dictionary.name}"></td>
 				<td th:text="${dictionary.language}"></td>
+				<td th:text="${dictionary.difficulty}"></td>
 				<td th:text="${dictionary.category.name}"></td>
 				<td th:unless="${isNotAdminPage}"  th:text="${dictionary.user} ? ${dictionary.user.userName} : 'N/A'"></td>
 				<td><a role="button" class="btn btn-warning"  th:href="@{/dictionaries/editWords(id=${dictionary.dictionaryId})}">Edytuj słówka</a></td>

@@ -19,6 +19,7 @@ import io2017.categories.Category;
 import io2017.categories.CategoryDto;
 import io2017.exceptions.CategoryExistsException;
 import io2017.exceptions.DictionaryExistsException;
+import io2017.helpers.Difficulty;
 import io2017.helpers.Language;
 import io2017.users.User;
 import io2017.users.UserRepository;
@@ -63,14 +64,14 @@ public class DictionaryController {
         String userMail = auth.getName(); // bo w tej metodzie auth zwraca email
         User user = userRepository.findByEmail(userMail);
         dictionaryDto.setUser(user);
-
+        
         List<Category> allCategories = (List<Category>) categoriesRepository.findAll();
 
     	model.addAttribute("allCategories", allCategories);
     	model.addAttribute("dictionary", dictionaryDto);
     	model.addAttribute("languages", Language.getAllLanguages());
-    
-    	//TODO wystylować ładniej create_dictionary
+    	model.addAttribute("difficulties", Difficulty.getAllDifficulties());
+    	
     	return "create_dictionary";
 	 }
 	
@@ -121,6 +122,7 @@ public class DictionaryController {
 			 model.addAttribute("allCategories", allCategories);
 			 model.addAttribute("dictionary", dictionaryDto);
 			 model.addAttribute("languages", Language.getAllLanguages());			 
+			 model.addAttribute("difficulties", Difficulty.getAllDifficulties());
 			 
 			 return "edit_dictionary";
 		 }
@@ -140,7 +142,8 @@ public class DictionaryController {
 	    	model.addAttribute("allCategories", allCategories);
 	    	model.addAttribute("dictionary", dictionaryDto);
 	    	model.addAttribute("languages", Language.getAllLanguages());
-			
+	    	model.addAttribute("difficulties", Difficulty.getAllDifficulties());
+	    	
 			return "edit_dictionary";
 		}
 		
@@ -164,6 +167,7 @@ public class DictionaryController {
 			 dictionary.setName(dictionaryDto.getName());
 			 dictionary.setCategory(dictionaryDto.getCategory());
 			 dictionary.setLanguage(dictionaryDto.getLanguage());
+			 dictionary.setDifficulty(dictionaryDto.getDifficulty());
 		 } else {
 			 //slownik nie ma ID -> nowy slownik
 			 Dictionary sameNameDictionary = dictionaryRepository.findByName(dictionaryDto.getName());

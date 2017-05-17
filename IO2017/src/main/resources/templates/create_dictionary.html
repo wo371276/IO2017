@@ -36,6 +36,12 @@
 		                  th:value="${var.name}" 
 		                  th:text="${var.name}"></option>
 		        </select>
+     		    <label for="difficulty">Trudność: </label>
+		        <select class="form-control"  id="difficulty" th:field="*{difficulty}">
+		          <option th:each="var : ${difficulties}" 
+		                  th:value="${var.difficulty}" 
+		                  th:text="${var.difficulty}"></option>
+		        </select>
 			</div>
 			<div class="alert alert-danger" th:each="error: ${#fields.errors('*')}"
          			th:text="${error}" >Validation error</div>		
