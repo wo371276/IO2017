@@ -49,30 +49,40 @@ public class ApiController {
 	    return "";
 	}
 	
-	// TODO aktualizowanie wyniku użytkownika
 	private void addScore(User user, int scoreVal, int mode, int dictionaryId) {
 		List<Score> userScores = scoreRepository.findByUser(user);
+		Dictionary dictionary = dictionaryRepository.findOne(Long.valueOf(dictionaryId));
 		
-		boolean shouldAdd = true;
+		if (!userHasScore(user, scoreVal, mode, dictionaryId)) {
+			Score score = new Score(scoreVal, mode, dictionary, user);
+			scoreRepository.save(score);
+			return;
+		}
 		
-		if (!userScores.isEmpty()) {
-			for (Score score : userScores) {
-				if (score.getMode() == mode) {
-					shouldAdd = false;
-					break;
-				}
+		// user ma już wynik, sprawdzamy czy trzeba zaktualizować
+		for (Score score : userScores) {
+			if (score.getMode() == mode && score.getDictionary().getDictionaryId() == dictionaryId) {
+				score.setScore(Math.max(scoreVal, score.getScore()));
+				scoreRepository.save(score);
+				return;
 			}
 		}
 		
-		Dictionary dictionary = dictionaryRepository.findOne(Long.valueOf(dictionaryId));
+	}
+	
+	private boolean userHasScore(User user, int scoreVal, int mode, int dictionaryId) {
+		List<Score> userScores = scoreRepository.findByUser(user);
 		
-		if (shouldAdd) {
-			Score newScore = new Score(scoreVal, mode, dictionary, user);
-			scoreRepository.save(newScore);
-			
-		} else {
-			
+		if (userScores.isEmpty()) {
+			return false;
 		}
 		
+		for (Score score : userScores) {
+			if (score.getMode() == mode && score.getDictionary().getDictionaryId() == dictionaryId) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

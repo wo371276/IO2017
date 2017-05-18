@@ -11,8 +11,14 @@
 	<div th:replace="fragments/header :: header"></div>
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div  class="col-md-8 col-md-offset-3">
+	<p class="bg-warning">
+		Wynik z danego quizy wyliczany jest z następującego wzoru <br /><br />
+		Wynik = (poprawne_odpowiedzi / liczba_słów_w_quizie) * (liczba_słów_w_quizie / liczba_słów_w_całym_słowniku)  
+	</p>
 	<!-- <h1> tu się uczymy języka <span th:text="${dictionaryLanguage}"></span></h1> -->
 	<h1>Ucz się w trybie otwartych pytań</h1>
+	<h3 th:if="${openScore != null}">Twój najlepszy wynik <span style="color: green;" th:text="${openScore}"></span>%</h3>
+	<h3 th:if="${openScore == null}">Nie rozwiązywałeś jeszcze tego quizu.</h3>
 	<form th:action="@{/quiz/open}" method="GET" class="form-horizontal">
 		<div class="form-group">
 			<input type="hidden" name="id" th:value="${id}"/>
@@ -32,6 +38,8 @@
 		</div>
 	</form>
 	<h1>Ucz się w trybie zamkniętych pytań</h1>
+	<h3 th:if="${abcdScore != null}">Twój najlepszy wynik <span style="color: green;" th:text="${abcdScore}"></span>%</h3>
+	<h3 th:if="${abcdScore == null}">Nie rozwiązywałeś jeszcze tego quizu.</h3>
 	<form th:action="@{/quiz/closed}" method="GET" class="form-horizontal">
 		<div class="form-group">
 			<input type="hidden" name="id" th:value="${id}"/>

@@ -24,6 +24,7 @@
 	var currentPage = 0;
 	var numberOfPages = <th:block th:inline="text"> [[${questionsNumber}]] </th:block>;
 	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
+	var dictionarySize = <th:block th:inline="text"> [[${dictionarySize}]] </th:block>;
 	
 	function changeWords(id) {
 		document.getElementById('query').innerHTML = obj[id].query;
@@ -128,14 +129,25 @@
 	
 	function showResult() {
 		submitTranslation();
- 		//window.alert("Twój wynik to: " + computeResult(0,0) + "/" + (numberOfPages+1));
- 		submitResult(computeResult(0,0));
+		var resultFloat = 100 * computeResult(0,0)/(numberOfPages+1);
+		var partialResult = parseInt(resultFloat);
+		var quizSize = numberOfPages + 1;
+		var result = parseInt(resultFloat * quizSize / dictionarySize) 
+		
+ 		submitResult(result);
+ 		
+ 		// TODO wywalić alert i zrobić to fajniej
+ 		alert("Twój wynik z tego quizu to: " + partialResult + "%. Skoro "+
+ 				"rozwiązywałeś " + quizSize + " z " + dictionarySize +
+ 				" to zapisany zostanie wynik: " + result + "%.");
 	}
 
+	// Wysyła żadanie Ajax'em do serwera.
 	function submitResult(result) {
 		<th:block th:inline="text">
 			var id = [[${dictionaryId}]];
-			var mode = [[${mode}]];
+			// 0 jak abcd, 1 jak otwarty
+			var modeT = 0;
 		</th:block>
 		$.ajax({
 		     type: "POST",

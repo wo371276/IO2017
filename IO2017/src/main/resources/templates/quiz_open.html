@@ -19,6 +19,7 @@
 	var currentPage = 0;
 	var numberOfPages = <th:block th:inline="text"> [[${wordsNumber}]] </th:block>;
 	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
+	var dictionarySize = <th:block th:inline="text"> [[${dictionarySize}]] </th:block>;
 	
 	function changeWords(id) {
 		if(mode == 0) {
@@ -82,9 +83,42 @@
 		}
 	}
 	
+	// kod niezbędny aby spring wiedział, że jesteśmy uwierzytelnieni
+	$(function () {
+		  var token = $("meta[name='_csrf']").attr("content");
+		  var header = $("meta[name='_csrf_header']").attr("content");
+		  $(document).ajaxSend(function(e, xhr, options) {
+		    xhr.setRequestHeader(header, token);
+		  });
+		});
+	
 	function showResult() {
 		submitTranslation();
- 		window.alert("Twój wynik to: " + computeResult(0,0) + "/" + (numberOfPages+1));
+		var resultFloat = 100 * computeResult(0,0)/(numberOfPages+1);
+		var partialResult = parseInt(resultFloat);
+		var quizSize = numberOfPages + 1
+		var result = parseInt(resultFloat * quizSize / dictionarySize) 
+		
+ 		submitResult(result);
+ 		
+ 		// TODO wywalić alert i zrobić to fajniej
+ 		alert("Twój wynik z tego quizu to: " + partialResult + "%. Skoro "+
+ 				"rozwiązywałeś " + quizSize + " z " + dictionarySize +
+ 				" to zapisany zostanie wynik: " + result + "%.");
+	}
+
+	// Wysyła żadanie Ajax'em do serwera.
+	function submitResult(result) {
+		<th:block th:inline="text">
+			var id = [[${dictionaryId}]];
+			// 0 jak abcd, 1 jak otwarty
+			var mode = 1;
+		</th:block>
+		$.ajax({
+		     type: "POST",
+		     url: "../api/submitScore",
+		     data: { score: result, dictionaryId: id, modeType: mode}
+		})
 	}
 	
 	window.onload = function() {

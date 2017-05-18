@@ -44,7 +44,10 @@ public class Score implements Serializable {
 		this.dictionary = dictionary;
 		this.user = user;
 	}
-
+	
+	public Score() {
+		
+	}
 
 	public int getId() {
 		return id;

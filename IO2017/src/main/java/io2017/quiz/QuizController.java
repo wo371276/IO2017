@@ -83,6 +83,7 @@ public class QuizController {
 		List<QuestionABCD> questions = QuestionABCD.getQuerySet(words,number,mode);
 		model.addAttribute("questions", questions);
 		model.addAttribute("questionsNumber", questions.size());
+		model.addAttribute("dictionarySize", dictionary.getWords().size());
 		model.addAttribute("dictionaryName", dictionary.getName());
 		model.addAttribute("dictionaryCategory", dictionary.getCategory());
 		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
@@ -108,6 +109,7 @@ public class QuizController {
 		model.addAttribute("wordsNumber", words.size());
 		model.addAttribute("dictionaryName", dictionary.getName());
 		model.addAttribute("dictionaryCategory", dictionary.getCategory());
+		model.addAttribute("dictionarySize", dictionary.getWords().size());
 		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
 		boolean hasWords = words.size() != 0 ? true : false;
 		model.addAttribute("hasWords", hasWords);
