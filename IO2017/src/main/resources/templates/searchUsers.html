@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<thymeleaf th:replace="fragments/head :: head" />
+<title>Wyszukiwanie użytkowników</title>
+</head>
+<body>
+	<main class="wrapper">
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-8 col-md-offset-3">
+		<h1>
+			Wyniki wyszukiwania dla <span th:text="${name}"></span>
+		</h1>
+		<ul th:each="user: ${searchUsers}">
+			<li><a th:href="@{/profil(login=${user.userName})}"> <span
+					th:text="${user.userName}"></span></a></li>
+		</ul>
+	</div>
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>

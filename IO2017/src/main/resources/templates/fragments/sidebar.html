@@ -14,5 +14,12 @@
 				<li sec:authorize="isAuthenticated()">
 					<a th:href="@{/dictionaries}">Zarządzaj swoimi słownikami</a>
 				</li>	
+				<li>
+				<form style="margin-left: 20px" th:action="@{/searchUsers}" class="form-horizontal">
+				<div class="form-group">
+				<input type="text" name="name" placeholder="Szukaj użytkownika"/>
+				</div>
+				</form>
+				</li>
             </ul>
 </nav>
