@@ -26,6 +26,8 @@ import io2017.exceptions.EmailExistsException;
 import io2017.exceptions.EmptyPasswordException;
 import io2017.exceptions.UserExistsException;
 import io2017.helpers.RegistrationHashHelper;
+import io2017.scores.Score;
+import io2017.scores.ScoreRepository;
 import io2017.users.dto.UserEditDto;
 import io2017.users.dto.UserRegisterDto;
 
@@ -33,15 +35,18 @@ import io2017.users.dto.UserRegisterDto;
 public class UserListController {
 	private UserRepository userRepository;
 	private UserRolesRepository userRolesRepository;
+	private ScoreRepository scoreRepository;
 	private UserDao userDao;
 	/* example
 	 * @RequestParam(value="name", required=false, defaultValue="World") String name, 
 	 */
 	@Autowired
 	public UserListController(UserRepository userRepository, UserDao userDao,
+						ScoreRepository scoreRepository,
 						UserRolesRepository userRolesRepository) {
 		this.userRepository = userRepository;
 		this.userDao = userDao;
+		this.scoreRepository = scoreRepository;
 		this.userRolesRepository = userRolesRepository;
 	}
 	
@@ -135,6 +140,21 @@ public class UserListController {
     	return "edit_user";
     }
     
+    @RequestMapping("/users/editUser")
+    public String editYourself(Model model) {
+    	
+    	User me = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	UserEditDto userEditDto = UserEditDto.buildDto(me);
+    	
+    	boolean isAdmin = userRolesRepository.findRoleByUserId(me.getUserId()).get(0).equals("ROLE_ADMIN");
+    	userEditDto.setEnabled(me.getEnabled());
+    	userEditDto.setAdmin(isAdmin);
+    	
+    	model.addAttribute("user", userEditDto);
+    	
+    	return "edit_yourself";
+    }
+    
     @RequestMapping("/admin/users/editUser/submit")
     public String saveEditedUser(@ModelAttribute("user") @Valid UserEditDto editUser,
     							BindingResult result, 
@@ -186,6 +206,57 @@ public class UserListController {
         }
     }
     
+    @RequestMapping("/users/editUser/submit")
+    public String saveEditedYourself(@ModelAttribute("user") @Valid UserEditDto editUser,
+    							BindingResult result, 
+        				    	WebRequest request, 
+        				    	Errors errors)  {
+    	
+    	UserRole userRole = userRolesRepository.findOne(
+    								userRolesRepository.findRoleIdByUserId(editUser.getUserId()).get(0));
+    	
+    	try {
+    		User userBeforeEdit = userRepository.findOne(editUser.getUserId());
+    		if(userBeforeEdit.getUserName().equals(editUser.getUsername()) == false)  {
+    			//skoro nowa nazwa jest inna to trzeba sprawdzić
+    			//czy nie istnieje już użytkownik o tej nazwie
+    			if (userRepository.findByUserName(editUser.getUsername()) != null) {   
+		            throw new UserExistsException();
+		        }
+    	        
+    		}
+    		
+    		if(userBeforeEdit.getEmail().equals(editUser.getEmail())== false ) {
+    			//przypadek co wyżej tylko, że dla emaila
+    			if (userRepository.findByEmail(editUser.getEmail()) != null) {   
+    	            throw new EmailExistsException();
+    	        }
+    		}
+    		editUser.saveUser(userBeforeEdit);
+    		
+        	userRepository.save(userBeforeEdit);
+        	
+        	if(editUser.isAdmin()) {
+        		userRole.setRole("ROLE_ADMIN");
+        	} else {
+        		userRole.setRole("ROLE_USER");
+        	}
+        	userRolesRepository.save(userRole);
+        	
+    	} catch (EmailExistsException e) {
+            result.rejectValue("email", "message.regError", e.toString());
+        } catch (UserExistsException e) {
+            result.rejectValue("username", "message.regError", e.toString());
+        }
+    	
+    	if (result.hasErrors()) {
+            return "edit_yourself";
+        } 
+        else {
+        	return "redirect:" + "/profil?login=" + editUser.getUsername();
+        }
+    }
+    
     @RequestMapping("/admin/users/deleteUser")
     public String deleteUser(Model model, @RequestParam("id") long id) {
     	Long roleId = userRolesRepository.findRoleIdByUserId(id).get(0);
@@ -194,6 +265,18 @@ public class UserListController {
     	userRepository.delete(id);
     	
     	return "redirect:" + "/admin/users";
+    }
+    
+    @RequestMapping("/users/deleteUser")
+    public String deleteUser(Model model) {
+    	User me = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	
+    	Long roleId = userRolesRepository.findRoleIdByUserId(me.getUserId()).get(0);
+    	UserRole userRole = userRolesRepository.findOne(roleId);
+    	userRolesRepository.delete(userRole);
+    	userRepository.delete(me.getUserId());
+    	
+    	return "redirect:" + "/login?logout";
     }
     
     @RequestMapping("/register/new")
@@ -293,5 +376,20 @@ public class UserListController {
     	model.addAttribute("searchUsers", res);
     	model.addAttribute("name", name);
     	return "searchUsers";
+    }
+    
+    @RequestMapping("/profil")
+    public String showProfile(Model model, @RequestParam("login") String username) {
+    	User user = userRepository.findByUserName(username);
+    	List<Score> scores = scoreRepository.findByUser(user);
+    	User me = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long myId= me.getUserId();
+
+        model.addAttribute("myId", myId);
+    	model.addAttribute("user", user);
+    	model.addAttribute("scores", scores);
+
+    	
+    	return "profile";
     }
 }

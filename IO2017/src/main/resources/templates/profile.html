@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Zarządzanie użytkownikami</title>
+<thymeleaf th:replace="fragments/head :: head" />
+</head>
+<body>
+	<main class='wrapper'>
+	<div th:replace="fragments/header :: header"></div>
+	<nav th:replace="fragments/sidebar :: sidebar"></nav>
+	<div class="col-md-8 col-md-offset-3">
+		<h1>Profil użytkownika</h1>
+		<p>
+			<label for="login">Login:</label>
+			<span id="login" th:text="${user.userName}"></span>
+		</p>
+		<p>
+			<label for="login">Email:</label>
+			<span id="email" th:text="${user.email}"></span>
+		</p>
+		<p>
+			<label for="name">Imię:</label>
+			<span id="name" th:text="${user.name}"></span>
+		</p>
+		<p>
+			<label for="surname">Nazwisko:</label>
+			<span id="surname" th:text="${user.surname}"></span>
+		</p>
+		<block sec:authorize="hasRole('ROLE_ADMIN')">
+			<p>
+				<label for="active">Aktywny:</label>
+				<span id="active" th:if="${user.enabled}">TAK</span>
+				<span id="active" th:unless="${user.enabled}">NIE</span>
+			</p>
+			<a role="button" class="btn btn-warning"  th:href="@{/admin/users/editUser(id=${user.userId})}">Edytuj</a>
+			<a role="button" class="btn btn-danger"  th:if="${myId} != ${user.userId}"
+					th:href="@{/admin/users/deleteUser(id=${user.userId})}">Usuń</a>
+					<span th:if="${myId} == ${user.userId}" role="button" class="btn btn-default"
+					th:href="@{/admin/users/deleteUser(id=${user.userId})}">To Ty
+					</span>
+		</block>
+		<block sec:authorize="hasRole('ROLE_USER')" th:if="${myId} == ${user.userId}">
+			<p>
+				<label for="active">Aktywny:</label>
+				<span id="active" th:if="${user.enabled}">TAK</span>
+				<span id="active" th:unless="${user.enabled}">NIE</span>
+			</p>
+			<a role="button" class="btn btn-warning" th:href="@{/users/editUser}">Edytuj</a>
+			<a role="button" class="btn btn-danger" th:href="@{/users/deleteUser}">Usuń konto</a>
+		</block>
+	</div>	
+	<div class="col-md-8 col-md-offset-3">
+		<h1>Wyniki:</h1>
+		<table class="table table-bordered">
+			<tr>
+				<th>Nazwa quizu</th>
+				<th>Wynik</th>
+				<th>Trudność</th>
+				<th>Język</th>
+			</tr>
+			<tr th:each="score : ${scores}">
+				<td><span th:text="${score.dictionary.name}"></span></td>
+				<td><span style="color: green;" th:text="${score.score}"></span>%</td>
+				<td><span th:text="${score.dictionary.difficulty}"></span></td>
+				<td><span th:text="${score.dictionary.language}"></span></td>
+				<td><a th:href="@{/quiz/flashcards(id=${score.dictionary.dictionaryId})}"
+					class="btn btn-primary" role="button">Kontynuuj naukę</a></td>
+				<td><a
+					th:href="@{/quiz/options(id=${score.dictionary.dictionaryId})}"
+					class="btn btn-primary" role="button">Rozwiąż ponownie</a></td>
+			</tr>
+		</table>
+	</div>
+		
+	<div th:replace="fragments/footer :: footer"></div>
+	</main>
+</body>
+</html>
