@@ -2,6 +2,7 @@ package io2017.categories;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -80,6 +81,12 @@ public class Category implements Serializable {
 	
 	public void clearDictionaries() {
 		this.dictionaries.clear();
+	}
+	public Set<Dictionary> getDictionaries(boolean all, String language){
+		if (all)
+			return getDictionaries();
+		return dictionaries.stream().filter(x -> x.getLanguage().equals(language))
+				.collect(Collectors.toSet());
 	}
 	
 }

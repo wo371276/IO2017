@@ -5,36 +5,97 @@
 <head>
 <thymeleaf th:replace="fragments/head :: head" />
 <title>Kategorie</title>
+<script type="text/javascript">
+	//<![CDATA[ 
+	function filter() {
+		// Declare variables 
+		var input, filter, table, tr, td, i;
+		input = document.getElementById("name");
+		name = input.value.toUpperCase();
+		input = document.getElementById("language");
+		language = input.value.toUpperCase();
+		min = parseInt(document.getElementById('min').value);
+		max = parseInt(document.getElementById('max').value);
+		table = document.getElementById("myTable");
+		tr = table.getElementsByTagName("tr");
+
+		for (i = 1; i < tr.length; i++) {
+			row = tr[i].getElementsByTagName("td");
+			dict_name = row[0];
+			dict_level = row[1].firstChild.innerHTML;
+			dict_language = row[2];
+			if (dict_name) {
+				if (dict_name.innerHTML.toUpperCase().indexOf(name) > -1 &&
+						dict_language.innerHTML.toUpperCase().indexOf(language) > -1 &&
+						dict_level >= min && dict_level <= max) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+	//]]>
+</script>
 </head>
 <body>
-<main class="wrapper">
+	<main class="wrapper">
 	<div th:replace="fragments/header :: header"></div>
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div class="col-md-8 col-md-offset-3">
 		<h1>Kategorie:</h1>
-		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-			<div class="panel panel-default" th:each="category : ${categories}">
-			  <div class="panel-heading" role="tab" th:id="'heading' + ${category.name}">
-			    <h4 class="panel-title">
-			      <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" th:href="'#collapse' + ${category.categoryId}" aria-expanded="false" th:aria-controls="'collapse' + ${category.categoryId}" th:text="${category.name}"></a>
-			    </h4>
-			  </div>
-			  <div th:id="'collapse' + ${category.categoryId}" class="panel-collapse collapse" role="tabpanel" th:aria-labelledby="'heading' + ${category.name}">
-			    <div class="panel-body">
-			      <div>
-		        	<a th:href="@{/category(id=${category.categoryId})}">
-		        		Wyświetl wszystkie słowniki TODO
-		        	</a>
-		          </div>
-		          <ul>
-		          	<li th:each="dictionary : ${category.dictionaries}">
-		          		<span th:text="${dictionary.name}"></span>
-		          		<a th:href="@{/quiz/flashcards(id=${dictionary.dictionaryId})}" class="btn btn-primary" role="button">Rozpocznij naukę</a>
-		    		    <a th:href="@{/quiz/options(id=${dictionary.dictionaryId})}" class="btn btn-primary" role="button">Rozwiąż quiz</a>
-		    		          	</li>
-		          </ul>
-		      </div>
-			  </div>
+		<div class="panel-group" id="accordion" role="tablist"
+			aria-multiselectable="true">
+			<div class="panel panel-default filterable"
+				th:each="category : ${categories}">
+				<div class="panel-heading" role="tab"
+					th:id="'heading' + ${category.name}">
+					<h4 class="panel-title">
+						<a class="collapsed" role="button" data-toggle="collapse"
+							data-parent="#accordion"
+							th:href="'#collapse' + ${category.categoryId}"
+							aria-expanded="false"
+							th:aria-controls="'collapse' + ${category.categoryId}"
+							th:text="${category.name}"></a>
+					</h4>
+				</div>
+				<div th:id="'collapse' + ${category.categoryId}"
+					class="panel-collapse collapse" role="tabpanel"
+					th:aria-labelledby="'heading' + ${category.name}">
+					<div class="panel-body">
+						<!-- <div>
+							<a th:href="@{/category(id=${category.categoryId})}">
+								Wyświetl wszystkie słowniki TODO </a>
+						</div> -->
+						<label for="name">Nazwa</label>
+						<input type="text" id="name" onkeyup="filter()"
+							placeholder="Nazwa" />
+							<label for="min">Minimalny poziom</label>
+							<input id="min" type="number" onclick="filter()" onkeyup="filter()" min="1" max="5" step="1" value="1"/>
+							<label for="max">Maksymalny poziom</label>
+							<input id="max" type="number" onclick="filter()" onkeyup="filter()" min="1" max="5" step="1" value="5"/>
+							<label for="language">Język</label>
+							<input type="text" id="language" onkeyup="filter()"
+							placeholder="Język" />
+						<table class="table table-bordered" id="myTable">
+							<tr class="header">
+								<th>Nazwa</th>
+								<th>Trudność</th>
+								<th>Język</th>
+							</tr>
+							<tr th:each="dictionary : ${category.dictionaries}">
+								<td><span th:text="${dictionary.name}"></span></td>
+								<td><span th:text="${dictionary.difficulty}"></span></td>
+								<td><span th:text="${dictionary.language}"></span></td>
+								<td><a th:href="@{/quiz/flashcards(id=${dictionary.dictionaryId})}"
+									class="btn btn-primary" role="button">Rozpocznij naukę</a></td>
+								<td><a
+									th:href="@{/quiz/options(id=${dictionary.dictionaryId})}"
+									class="btn btn-primary" role="button">Rozwiąż quiz</a></td>
+							</tr>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
