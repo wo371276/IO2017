@@ -5,6 +5,11 @@
 <head>
 <title>Zarządzanie użytkownikami</title>
 <thymeleaf th:replace="fragments/head :: head" />
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+});
+</script>
 </head>
 <body>
 	<main class='wrapper'>
@@ -15,6 +20,14 @@
 		<p>
 			<label for="login">Login:</label>
 			<span id="login" th:text="${user.userName}"></span>
+		</p>
+		<p>
+			<label for="points">Punkty:</label>
+			<span id="points"><b style="color: green;" th:text="${userPoints}"></b>
+			<span class="glyphicon glyphicon-exclamation-sign" data-toggle="tooltip" 
+				title="Punkty obliczone są z następującego wzoru. Suma dla każdego słownika 
+				(trudność słownika * max(wynik za quiz otwarty * 2, wynik za quiz zamknęty))."></span>
+			</span>
 		</p>
 		<p>
 			<label for="login">Email:</label>
