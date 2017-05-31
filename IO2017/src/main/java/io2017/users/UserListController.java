@@ -384,8 +384,25 @@ public class UserListController {
         model.addAttribute("myId", myId);
     	model.addAttribute("user", user);
     	model.addAttribute("scores", scores);
-
+    	model.addAttribute("userPoints", this.calculateUserScore(scores));
     	
     	return "profile";
+    }
+    
+    private int calculateUserScore(List<Score> scores) {
+    	int scoreVal = 0;
+    	
+    	for (Score score : scores) {
+    		int difficulty = score.getDictionary().getDifficulty();
+    		
+    		if (score.getMode() == 1) {
+    			scoreVal = Math.max(scoreVal, score.getScore() * difficulty * 2);
+    		} else {
+    			scoreVal = Math.max(scoreVal, score.getScore() * difficulty);
+    		}
+    		
+    	}
+    	
+    	return scoreVal;
     }
 }
