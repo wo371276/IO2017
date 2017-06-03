@@ -10,9 +10,9 @@
 	<main class='wrapper'>
 	<div th:replace="fragments/header :: header"></div>
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
-	<div class="col-md-4 col-md-offset-5 alert alert-danger" th:if="${param.error}">Błędny login lub hasło, lub
+	<div class="col-md-4 col-md-offset-5 col-sm-5 col-sm-offset-4 col-xs-8 col-xs-offset2 alert alert-danger" th:if="${param.error}">Błędny login lub hasło, lub
 			użytkownik bez aktywacji.</div>
-	<div class="col-md-2 col-md-offset-6">
+	<div class="col-md-2 col-md-offset-6 col-sm-4 col-sm-offset-5 col-xs-6 col-xs-offset-3">
 		<div th:if="${param.logout}">Zostałeś wylogowany.</div>
 		<form th:action="@{/login}" method="post" class="form-horizontal">
 			<div class="form-group">

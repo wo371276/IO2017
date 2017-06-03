@@ -9,7 +9,8 @@
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <div th:fragment="header">
-	<nav class="navbar navbar-fixed-top navbar-inverse">
+<thymeleaf th:replace="fragments/responsive-menu ::responsive-menu" />
+	<nav class="navbar navbar-fixed-top navbar-inverse hidden-xs">
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand" th:href="@{/home}">IO2017</a>
