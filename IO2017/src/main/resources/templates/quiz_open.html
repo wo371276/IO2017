@@ -6,10 +6,10 @@
 <thymeleaf th:replace="fragments/head :: head" />
 <script>
 	var obj = {
-	    <th:block th:inline="text" th:each="word, iter : ${words}">
+		<th:block th:inline="text" th:each="question, iter : ${questions}">
 	    '[[${iter.index}]]' : {
-	    	'firstLang' : '[[${word.polishWord}]]',
-	    	'secondLang' : '[[${word.foreignTranslation}]]',
+	    	'query' : '[[${question.query}]]',
+	    	'answer' : '[[${question.answer}]]',
 	    	'result' : "",
 	    },
 	    </th:block>
@@ -17,16 +17,13 @@
 	};
 
 	var currentPage = 0;
-	var numberOfPages = <th:block th:inline="text"> [[${wordsNumber}]] </th:block>;
-	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
+	var numberOfPages = <th:block th:inline="text"> [[${questionsNumber}]] </th:block>;
+	var quizType = <th:block th:inline="text"> '[[${quizType}]]' </th:block>;
 	var dictionarySize = <th:block th:inline="text"> [[${dictionarySize}]] </th:block>;
+	var frozen = 0;
 	
 	function changeWords(id) {
-		if(mode == 0) {
-			document.getElementById('query').innerHTML = obj[id].firstLang;
-		} else {
-			document.getElementById('query').innerHTML = obj[id].secondLang;
-		}
+		document.getElementById('query').innerHTML = obj[id].query;
 		
 		document.getElementById('translated').value = obj[id].result;				
 		document.getElementById('pageNumber').innerHTML = id + 1;
@@ -41,6 +38,17 @@
 		    document.getElementById('nextPg').style.display = 'none';
 		} else {
 			document.getElementById('nextPg').style.display = 'block';
+		}
+		
+		if (frozen == 1) {
+			var temp = document.getElementById('translated_result');
+			if (obj[id].answer == obj[id].result) {
+				temp.className = "alert alert-success";
+			    temp.innerHTML = "Poprawna odpowiedź!";
+			} else {
+				temp.className = "alert alert-danger";
+			    temp.innerHTML = "Poprawna odpowiedź to " + obj[id].answer + "...";
+			}
 		}
 	}
 	
@@ -64,12 +72,14 @@
 		}
 	}
 	
+	function freezeAnswering() {
+		document.getElementById('translated').disabled = true;
+	    document.getElementById('translated_result').style.display = 'block';
+	    frozen = 1;
+	}
+	
 	function resultOf(id) {
-		if(mode == 0) {
-			return obj[id].secondLang == obj[id].result;
-		} else {
-			return obj[id].firstLang == obj[id].result;
-		}
+		return obj[id].answer == obj[id].result;
 	}
 	
 	function computeResult(id, res) {
@@ -100,29 +110,31 @@
 		var result = parseInt(resultFloat * quizSize / dictionarySize) 
 		
  		submitResult(result);
+		freezeAnswering();
  		
  		// TODO wywalić alert i zrobić to fajniej
  		alert("Twój wynik z tego quizu to: " + partialResult + "%. Skoro "+
  				"rozwiązywałeś " + quizSize + " z " + dictionarySize +
  				" to zapisany zostanie wynik: " + result + "%.");
+ 		
+		changeWords(currentPage);
 	}
 
 	// Wysyła żadanie Ajax'em do serwera.
 	function submitResult(result) {
 		<th:block th:inline="text">
 			var id = [[${dictionaryId}]];
-			// 0 jak abcd, 1 jak otwarty
-			var mode = 1;
 		</th:block>
 		$.ajax({
 		     type: "POST",
 		     url: "../api/submitScore",
-		     data: { score: result, dictionaryId: id, modeType: mode}
+		     data: { score: result, dictionaryId: id, quizType: quizType}
 		})
 	}
 	
 	window.onload = function() {
 		numberOfPages--;
+	    document.getElementById('translated_result').style.display = 'none';
 		changeWords(0);
 	};
 	
@@ -156,8 +168,8 @@
 	<nav th:replace="fragments/sidebar :: sidebar"></nav>
 	<div  class="col-md-8 col-md-offset-3 col-sm-9 col-sm-offset-3 col-xs-10 col-xs-offset-1">
 			<h2>Nazwa słownika: <span th:text="${dictionaryName}"></span> </h2>
-			<h3 th:if="${hasWords}" class="card-title">Pytanie <span id="pageNumber">X</span> / <span th:text="${wordsNumber}"></span>  </h3>
-			<div th:if="${hasWords}" class="row" style="height: 250px;">
+			<h3 th:if="${hasEnoughWords}" class="card-title">Pytanie <span id="pageNumber">X</span> / <span th:text="${questionsNumber}"></span>  </h3>
+			<div th:if="${hasEnoughWords}" class="row" style="height: 250px;">
 		    <div class="col-md-4 col-sm-3 col-xs-2" style="height: 200px;">
 			    <span id="prevPg" style="color: indianred; float:right; margin-top: 95px; font-size: 30px;" class="glyphicon glyphicon-arrow-left"
 		    			 onclick="previousPage();" />
@@ -165,7 +177,8 @@
 			<div class="col-md-4 col-sm-6 col-xs-8" style="height: 200px;">
 				<h2 class="card-title">Przetłumacz</h2>
 			    <p id="query" class="card-text" style="font-size:25px;">coś po polsku</p>
-				<input type="text" id="translated" class="form-control" />			    
+				<input type="text" id="translated" class="form-control" />
+				<div class="alert alert-danger" id="translated_result"></div>		    
 			</div>
 		    <div class="col-md-4 col-sm-3 col-xs-2" style="height: 200px;">
 		    	
@@ -176,7 +189,7 @@
 		    	<span id="show_result" type="button" class="btn btn-success" onclick="showResult();">Pokaż wynik</span>
 		    </div>
 		  </div>
-		  	<div th:unless="${hasWords}" class="col-md-12" style="height: 200px;">
+		  	<div th:unless="${hasEnoughWords}" class="col-md-12" style="height: 200px;">
 				<h4>Słownik nie zawiera żadnych słówek</h4>
 			</div>
 	</div>

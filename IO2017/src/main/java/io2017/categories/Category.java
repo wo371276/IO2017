@@ -72,7 +72,7 @@ public class Category implements Serializable {
 	}
 
 	public void setDictionaries(Set<Dictionary> dictionaries) {
-		dictionaries = dictionaries;
+		this.dictionaries = dictionaries;
 	}
 	
 	public void deleteFromDictionaries(Dictionary dictionary) {

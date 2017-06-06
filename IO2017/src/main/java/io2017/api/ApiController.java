@@ -39,29 +39,29 @@ public class ApiController {
 	@RequestMapping(value = "/api/submitScore", method = RequestMethod.POST, 
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String Submit(@RequestParam("score") String score,
-			@RequestParam("modeType") String mode,
+			@RequestParam("quizType") String quizType,
 			@RequestParam("dictionaryId") String dictionaryId) {
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		// Long userId = user.getUserId();
 		
-		addScore(user, Integer.parseInt(score), Integer.parseInt(mode), Integer.parseInt(dictionaryId));
+		addScore(user, Integer.parseInt(score), quizType, Integer.parseInt(dictionaryId));
 		
 	    return "";
 	}
 	
-	private void addScore(User user, int scoreVal, int mode, int dictionaryId) {
+	private void addScore(User user, int scoreVal, String quizType, int dictionaryId) {
 		List<Score> userScores = scoreRepository.findByUser(user);
 		Dictionary dictionary = dictionaryRepository.findOne(Long.valueOf(dictionaryId));
 		
-		if (!userHasScore(user, scoreVal, mode, dictionaryId)) {
-			Score score = new Score(scoreVal, mode, dictionary, user);
+		if (!userHasScore(user, scoreVal, quizType, dictionaryId)) {
+			Score score = new Score(scoreVal, quizType, dictionary, user);
 			scoreRepository.save(score);
 			return;
 		}
 		
 		// user ma już wynik, sprawdzamy czy trzeba zaktualizować
 		for (Score score : userScores) {
-			if (score.getMode() == mode && score.getDictionary().getDictionaryId() == dictionaryId) {
+			if (score.getQuizType() == quizType && score.getDictionary().getDictionaryId() == dictionaryId) {
 				score.setScore(Math.max(scoreVal, score.getScore()));
 				scoreRepository.save(score);
 				return;
@@ -70,7 +70,7 @@ public class ApiController {
 		
 	}
 	
-	private boolean userHasScore(User user, int scoreVal, int mode, int dictionaryId) {
+	private boolean userHasScore(User user, int scoreVal, String quizType, int dictionaryId) {
 		List<Score> userScores = scoreRepository.findByUser(user);
 		
 		if (userScores.isEmpty()) {
@@ -78,7 +78,7 @@ public class ApiController {
 		}
 		
 		for (Score score : userScores) {
-			if (score.getMode() == mode && score.getDictionary().getDictionaryId() == dictionaryId) {
+			if (score.getQuizType() == quizType && score.getDictionary().getDictionaryId() == dictionaryId) {
 				return true;
 			}
 		}

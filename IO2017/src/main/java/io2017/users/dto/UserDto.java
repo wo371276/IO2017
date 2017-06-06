@@ -1,9 +1,9 @@
 package io2017.users.dto;
 
 import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
-import io2017.validators.PasswordMatches;
 import io2017.validators.ValidEmail;
 
 public class UserDto {

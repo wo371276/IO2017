@@ -7,12 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 import io2017.dictionaries.Word;
+import io2017.helpers.QuizMode;
 
-public class QuestionABCD {
-	
-	private String query;
-
-	private String answer;
+public class QuestionABCD extends Question {
 	
 	private String a;
 
@@ -22,14 +19,11 @@ public class QuestionABCD {
 
 	private String d;
 	
-	public QuestionABCD(Word pQ, Set<String> preAnswers, Integer mode) {
-		if (mode == 0) {
-			query = pQ.getPolishWord();
-			answer = pQ.getForeignTranslation();
-		} else {
-			query = pQ.getForeignTranslation();
-			answer = pQ.getPolishWord();
-		}
+	public QuestionABCD(String query, String answer, Set<String> preAnswers) {
+		super();
+		
+		this.query = query;
+		this.answer = answer;
 		
 		System.out.println(preAnswers.remove(answer));
 		List<String> list = new LinkedList<String>(preAnswers);
@@ -44,14 +38,6 @@ public class QuestionABCD {
 		d = answers.get(3);
 		
 		preAnswers.add(answer);
-	}
-
-	public String getQuery() {
-		return query;
-	}
-
-	public String getAnswer() {
-		return answer;
 	}
 
 	public String getA() {
@@ -70,16 +56,16 @@ public class QuestionABCD {
 		return d;
 	}
 
-	public static List<QuestionABCD> getQuerySet(List<Word> words, Integer number, Integer mode) {
+	public static List<Question> getQuerySet(List<Word> words, Integer number, QuizMode qMode) {
 		
-		List<QuestionABCD> questions = new LinkedList<QuestionABCD>();
+		List<Question> questions = new LinkedList<Question>();
 
 		if (words.size() < 4)
 			return questions;
 		
 		Set<String> answers = new HashSet<String>();
 		for (Word word : words) {
-			if (mode == 0) {
+			if (qMode == QuizMode.FROM_POLISH) {
 				answers.add(word.getForeignTranslation());
 			} else {
 				answers.add(word.getPolishWord());
@@ -91,7 +77,11 @@ public class QuestionABCD {
 		List<Word> preQuestions = words.subList(0, number);
 				
 		for (Word pQ : preQuestions) {
-			questions.add(new QuestionABCD(pQ,answers,mode));
+			if (qMode == QuizMode.FROM_POLISH) {
+				questions.add(new QuestionABCD(pQ.getPolishWord(),pQ.getForeignTranslation(),answers));
+			} else {
+				questions.add(new QuestionABCD(pQ.getForeignTranslation(),pQ.getPolishWord(),answers));
+			}
 		}
 		
 		return questions;

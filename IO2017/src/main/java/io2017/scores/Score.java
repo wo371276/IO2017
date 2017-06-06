@@ -18,6 +18,11 @@ import io2017.users.User;
 @Table(name = "scores")
 public class Score implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6390166773481421497L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name="id")
@@ -26,8 +31,8 @@ public class Score implements Serializable {
 	@Column(name="score")
 	private int score;
 	
-	@Column(name="mode")
-	private int mode;
+	@Column(name="quizType")
+	private String quizType;
 	
 	@ManyToOne
 	@JoinColumn(name = "dictionary_id")
@@ -38,9 +43,9 @@ public class Score implements Serializable {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	public Score(int score, int mode, Dictionary dictionary, User user) {
+	public Score(int score, String quizType, Dictionary dictionary, User user) {
 		this.score = score;
-		this.mode = mode;
+		this.quizType = quizType;
 		this.dictionary = dictionary;
 		this.user = user;
 	}
@@ -69,13 +74,13 @@ public class Score implements Serializable {
 	}
 
 
-	public int getMode() {
-		return mode;
+	public String getQuizType() {
+		return quizType;
 	}
 
 
-	public void setMode(int mode) {
-		this.mode = mode;
+	public void setQuizType(String quizType) {
+		this.quizType = quizType;
 	}
 
 

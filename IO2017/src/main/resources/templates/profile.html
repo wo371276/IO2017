@@ -71,12 +71,14 @@ $(document).ready(function(){
 				<th>Nazwa quizu</th>
 				<th>Wynik</th>
 				<th>Trudność</th>
+				<th>Tryb</th>
 				<th>Język</th>
 			</tr>
 			<tr th:each="score : ${scores}">
 				<td><span th:text="${score.dictionary.name}"></span></td>
 				<td><span style="color: green;" th:text="${score.score}"></span>%</td>
 				<td><span th:text="${score.dictionary.difficulty}"></span></td>
+				<td><span th:text="${score.quizType}"></span></td>
 				<td><span th:text="${score.dictionary.language}"></span></td>
 				<td><a th:href="@{/quiz/flashcards(id=${score.dictionary.dictionaryId})}"
 					class="btn btn-primary" role="button">Kontynuuj naukę</a></td>

@@ -1,6 +1,5 @@
 package io2017.quiz;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,6 +15,8 @@ import io2017.dictionaries.DictionaryRepository;
 import io2017.dictionaries.Word;
 import io2017.dictionaries.WordRepository;
 import io2017.helpers.Language;
+import io2017.helpers.QuizMode;
+import io2017.helpers.QuizType;
 import io2017.users.UserRepository;
 import io2017.users.UserRolesRepository;
 
@@ -74,48 +75,47 @@ public class QuizController {
 	
 	@RequestMapping("/quiz/closed")
 	public String quizClosed(Model model, @RequestParam("id") long id,
-			@RequestParam(value = "mode", required=false, defaultValue="0") Integer mode,
+			@RequestParam(value = "mode", required=false, defaultValue="fromPolish") String mode,
 			@RequestParam(value = "number") Integer number) {
 		
 		Dictionary dictionary = dictionaryRepository.findOne(id);
 		List<Word> words = new LinkedList<Word>();
 		words.addAll(dictionary.getWords());
-		List<QuestionABCD> questions = QuestionABCD.getQuerySet(words,number,mode);
-		model.addAttribute("questions", questions);
-		model.addAttribute("questionsNumber", questions.size());
-		model.addAttribute("dictionarySize", dictionary.getWords().size());
-		model.addAttribute("dictionaryName", dictionary.getName());
-		model.addAttribute("dictionaryCategory", dictionary.getCategory());
-		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
-		boolean hasEnoughWords = words.size() > 3 ? true : false;
-		model.addAttribute("hasEnoughWords", hasEnoughWords);
+		QuizMode qMode = QuizMode.valueOf(mode);
+		List<Question> questions = QuestionABCD.getQuerySet(words,number,qMode);
 		
-		model.addAttribute("mode", mode);
-		
-		return "quiz_abcd";
+		return openQuiz(model,questions,dictionary,QuizType.CLOSED,"quiz_abcd");
 	}
 	
 	@RequestMapping("/quiz/open")
 	public String quizOpen(Model model, @RequestParam("id") long id,
-			@RequestParam(value = "mode", required=false, defaultValue="0") Integer mode,
+			@RequestParam(value = "mode", required=false, defaultValue="fromPolish") String mode,
 			@RequestParam(value = "number") Integer number) {
 		
 		Dictionary dictionary = dictionaryRepository.findOne(id);
 		List<Word> words = new LinkedList<Word>();
 		words.addAll(dictionary.getWords());
-		Collections.shuffle(words);
-		words = words.subList(0, number);
-		model.addAttribute("words", words);
-		model.addAttribute("wordsNumber", words.size());
+		QuizMode qMode = QuizMode.valueOf(mode);
+		List<Question> questions = Question.getQuerySet(words,number,qMode);
+		
+		return openQuiz(model,questions,dictionary,QuizType.OPEN,"quiz_open");
+	}
+	
+	private String openQuiz(Model model, List<Question> questions, Dictionary dictionary,
+			QuizType quizType, String quizTemplate) {
+		
+		
+		model.addAttribute("questions", questions);
+		model.addAttribute("questionsNumber", questions.size());
 		model.addAttribute("dictionaryName", dictionary.getName());
 		model.addAttribute("dictionaryCategory", dictionary.getCategory());
 		model.addAttribute("dictionarySize", dictionary.getWords().size());
 		model.addAttribute("dictionaryId", dictionary.getDictionaryId());
-		boolean hasWords = words.size() != 0 ? true : false;
-		model.addAttribute("hasWords", hasWords);
+		boolean hasEnoughWords = questions.size() > 0 ? true : false;
+		model.addAttribute("hasEnoughWords", hasEnoughWords);
 		
-		model.addAttribute("mode", mode);
+		model.addAttribute("quizType", quizType.getName());
 		
-		return "quiz_open";
+		return quizTemplate;
 	}
 }

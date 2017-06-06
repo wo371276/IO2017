@@ -15,6 +15,7 @@ import io2017.dictionaries.Dictionary;
 import io2017.dictionaries.DictionaryRepository;
 import io2017.dictionaries.Word;
 import io2017.dictionaries.WordRepository;
+import io2017.helpers.QuizType;
 import io2017.scores.Score;
 import io2017.scores.ScoreRepository;
 import io2017.users.User;
@@ -60,24 +61,24 @@ public class QuizOptionsController {
 		
 		Integer scoreVal;
 		
-		if ((scoreVal = getScore(0, userScores, dictionary)) != null) {
+		if ((scoreVal = getScore(QuizType.CLOSED, userScores, dictionary)) != null) {
 			model.addAttribute("abcdScore", scoreVal);
 		}
 		
-		if ((scoreVal = getScore(1, userScores, dictionary)) != null) {
+		if ((scoreVal = getScore(QuizType.OPEN, userScores, dictionary)) != null) {
 			model.addAttribute("openScore", scoreVal);
 		}
 		
 		return "quiz_options";
 	}
 	
-	private Integer getScore(int mode, List<Score> userScores, Dictionary dictionary) {
+	private Integer getScore(QuizType quizType, List<Score> userScores, Dictionary dictionary) {
 		if (userScores.isEmpty()) {
 			return null;
 		}
 		
 		for (Score score : userScores) {
-			if (score.getMode() == mode && score.getDictionary().equals(dictionary)) {
+			if (score.getQuizType().equals(quizType.getName()) && score.getDictionary().equals(dictionary)) {
 				return score.getScore();
 			}
 		}

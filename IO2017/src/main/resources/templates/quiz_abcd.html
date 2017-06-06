@@ -23,8 +23,9 @@
 
 	var currentPage = 0;
 	var numberOfPages = <th:block th:inline="text"> [[${questionsNumber}]] </th:block>;
-	var mode = <th:block th:inline="text"> [[${mode}]] </th:block>;
+	var quizType = <th:block th:inline="text"> '[[${quizType}]]' </th:block>;
 	var dictionarySize = <th:block th:inline="text"> [[${dictionarySize}]] </th:block>;
+	var frozen = 0;
 	
 	function changeWords(id) {
 		document.getElementById('query').innerHTML = obj[id].query;
@@ -37,10 +38,6 @@
 		document.getElementById('for_c').innerHTML = obj[id].c;	
 		document.getElementById('d').value = obj[id].d;
 		document.getElementById('for_d').innerHTML = obj[id].d;	
-		/* document.getElementById('a_option').value = obj[id].a;				
-		document.getElementById('b_option').value = obj[id].b;				
-		document.getElementById('c_option').value = obj[id].c;				
-		document.getElementById('d_option').value = obj[id].d;	 */
 		document.getElementById('pageNumber').innerHTML = id + 1;
 		
 		document.getElementById(obj[currentPage].choice).checked = true;
@@ -56,11 +53,43 @@
 		} else {
 			document.getElementById('nextPg').style.display = 'block';
 		}
+		
+		if(frozen == 1) {
+			if (obj[id].answer == obj[id].a) {
+				document.getElementById("for_a").style.backgroundColor = "green";
+			} else {
+				document.getElementById("for_a").style.backgroundColor = "transparent";
+			}
+			
+			if (obj[id].answer == obj[id].b) {
+				document.getElementById("for_b").style.backgroundColor = "green";
+			} else {
+				document.getElementById("for_b").style.backgroundColor = "transparent";
+			}
+			
+			if (obj[id].answer == obj[id].c) {
+				document.getElementById("for_c").style.backgroundColor = "green";
+			} else {
+				document.getElementById("for_c").style.backgroundColor = "transparent";
+			}
+			
+			if (obj[id].answer == obj[id].d) {
+				document.getElementById("for_d").style.backgroundColor = "green";
+			} else {
+				document.getElementById("for_d").style.backgroundColor = "transparent";
+			}
+			
+			if (obj[id].answer != obj[id].result) {
+				document.getElementById("for_" + obj[currentPage].choice).style.backgroundColor = "red";
+			}
+		}
 	}
 	
 	function submitTranslation() {
-		obj[currentPage].choice = document.querySelector('input[name="pytanie"]:checked').id;
-		obj[currentPage].result = document.querySelector('input[name="pytanie"]:checked').value;
+		if (frozen == 0) {
+			obj[currentPage].choice = document.querySelector('input[name="pytanie"]:checked').id;
+			obj[currentPage].result = document.querySelector('input[name="pytanie"]:checked').value;
+		}
 	}
 	
 	function nextPage() {
@@ -103,6 +132,14 @@
 		}
 	}
 	
+	function freezeAnswering() {
+		document.getElementById('a').disabled = true;
+		document.getElementById('b').disabled = true;
+		document.getElementById('c').disabled = true;
+		document.getElementById('d').disabled = true;
+		frozen = 1;
+	}
+	
 	function resultOf(id) {
 		return obj[id].answer == obj[id].result;
 	}
@@ -135,24 +172,25 @@
 		var result = parseInt(resultFloat * quizSize / dictionarySize) 
 		
  		submitResult(result);
- 		
+		freezeAnswering();
+
  		// TODO wywalić alert i zrobić to fajniej
  		alert("Twój wynik z tego quizu to: " + partialResult + "%. Skoro "+
  				"rozwiązywałeś " + quizSize + " z " + dictionarySize +
  				" to zapisany zostanie wynik: " + result + "%.");
+ 		
+		changeWords(currentPage);
 	}
 
 	// Wysyła żadanie Ajax'em do serwera.
 	function submitResult(result) {
 		<th:block th:inline="text">
 			var id = [[${dictionaryId}]];
-			// 0 jak abcd, 1 jak otwarty
-			var mode = 0;
 		</th:block>
 		$.ajax({
 		     type: "POST",
 		     url: "../api/submitScore",
-		     data: { score: result, dictionaryId: id, modeType: mode}
+		     data: { score: result, dictionaryId: id, quizType: quizType}
 		})
 	}
 	
@@ -177,7 +215,9 @@
 	    }
 	    
 	    if (event.keyCode == 38) {
-	        previousAnswer();
+	    	if (frozen == 0) {
+		        previousAnswer();
+	    	}
 	    }
 	    
 	    if (event.keyCode == 39) {
@@ -185,7 +225,9 @@
 	    }
 	    
 	    if (event.keyCode == 40) {
-	        nextAnswer();
+	    	if (frozen == 0) {
+		        nextAnswer();
+	    	}
 	    }
 	    
 	});

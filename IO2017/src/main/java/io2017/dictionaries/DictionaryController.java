@@ -2,8 +2,6 @@ package io2017.dictionaries;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io2017.categories.CategoriesRepository;
 import io2017.categories.Category;
-import io2017.categories.CategoryDto;
-import io2017.exceptions.CategoryExistsException;
 import io2017.exceptions.DictionaryExistsException;
 import io2017.helpers.Difficulty;
 import io2017.helpers.Language;

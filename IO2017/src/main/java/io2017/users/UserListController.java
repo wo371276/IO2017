@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import io2017.exceptions.EmailExistsException;
 import io2017.exceptions.EmptyPasswordException;
 import io2017.exceptions.UserExistsException;
+import io2017.helpers.QuizType;
 import io2017.helpers.RegistrationHashHelper;
 import io2017.scores.Score;
 import io2017.scores.ScoreRepository;
@@ -395,7 +396,7 @@ public class UserListController {
     	for (Score score : scores) {
     		int difficulty = score.getDictionary().getDifficulty();
     		
-    		if (score.getMode() == 1) {
+    		if (score.getQuizType().equals(QuizType.OPEN.getName())) {
     			scoreVal = Math.max(scoreVal, score.getScore() * difficulty * 2);
     		} else {
     			scoreVal = Math.max(scoreVal, score.getScore() * difficulty);
