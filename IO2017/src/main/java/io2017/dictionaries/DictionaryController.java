@@ -65,8 +65,8 @@ public class DictionaryController {
 
     	model.addAttribute("allCategories", allCategories);
     	model.addAttribute("dictionary", dictionaryDto);
-    	model.addAttribute("languages", Language.getAllLanguages());
-    	model.addAttribute("difficulties", Difficulty.getAllDifficulties());
+    	model.addAttribute("languages", Language.values());
+    	model.addAttribute("difficulties", Difficulty.values());
     	
     	return "create_dictionary";
 	 }
@@ -95,7 +95,7 @@ public class DictionaryController {
 			
 	    	model.addAttribute("allCategories", allCategories);
 	    	model.addAttribute("dictionary", dictionaryDto);
-	    	model.addAttribute("languages", Language.getAllLanguages());
+	    	model.addAttribute("languages", Language.values());
 			
 			return "create_dictionary";
 		}
@@ -117,8 +117,8 @@ public class DictionaryController {
 
 			 model.addAttribute("allCategories", allCategories);
 			 model.addAttribute("dictionary", dictionaryDto);
-			 model.addAttribute("languages", Language.getAllLanguages());			 
-			 model.addAttribute("difficulties", Difficulty.getAllDifficulties());
+			 model.addAttribute("languages", Language.values());			 
+			 model.addAttribute("difficulties", Difficulty.values());
 			 
 			 return "edit_dictionary";
 		 }
@@ -137,8 +137,8 @@ public class DictionaryController {
 			
 	    	model.addAttribute("allCategories", allCategories);
 	    	model.addAttribute("dictionary", dictionaryDto);
-	    	model.addAttribute("languages", Language.getAllLanguages());
-	    	model.addAttribute("difficulties", Difficulty.getAllDifficulties());
+	    	model.addAttribute("languages", Language.values());
+	    	model.addAttribute("difficulties", Difficulty.values());
 	    	
 			return "edit_dictionary";
 		}

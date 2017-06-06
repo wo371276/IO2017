@@ -21,24 +21,4 @@ public enum QuizType {
 		return this.number;
 	}
 	
-	public static QuizType getQuizTypeByName(String name) {
-		if(name.equals(QuizType.OPEN.getName())) {
-			return QuizType.OPEN;
-		} else if(name.equals(QuizType.CLOSED.getName())) {
-			return QuizType.CLOSED;
-		}
-		
-		return QuizType.CLOSED;
-	}
-	
-	public static QuizType getQuizTypeByNumber(int number) {
-		if(number == QuizType.OPEN.getNumber()) {
-			return QuizType.OPEN;
-		} else if(number == QuizType.CLOSED.getNumber()) {
-			return QuizType.CLOSED;
-		}
-		
-		return QuizType.CLOSED;
-	}
-	
 }

@@ -1,6 +1,6 @@
 package io2017.quiz;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +44,10 @@ public class QuizController {
 	
 	@RequestMapping("/quiz/flashcards")
 	public String quizFlashcards(Model model, @RequestParam("id") long id,
-			@RequestParam(value = "mode", required=false, defaultValue="0") Integer mode) {
+			@RequestParam(value = "mode", required=false, defaultValue="0") int mode) {
 		
 		Dictionary dictionary = dictionaryRepository.findOne(id);
-		List<Word> words = new LinkedList<Word>();
+		List<Word> words = new ArrayList<Word>();
 		words.addAll(dictionary.getWords());
 		model.addAttribute("words", words);
 		model.addAttribute("wordsNumber", words.size());
@@ -76,10 +76,10 @@ public class QuizController {
 	@RequestMapping("/quiz/closed")
 	public String quizClosed(Model model, @RequestParam("id") long id,
 			@RequestParam(value = "mode", required=false, defaultValue="fromPolish") String mode,
-			@RequestParam(value = "number") Integer number) {
+			@RequestParam(value = "number") int number) {
 		
 		Dictionary dictionary = dictionaryRepository.findOne(id);
-		List<Word> words = new LinkedList<Word>();
+		List<Word> words = new ArrayList<Word>();
 		words.addAll(dictionary.getWords());
 		QuizMode qMode = QuizMode.valueOf(mode);
 		List<Question> questions = QuestionABCD.getQuerySet(words,number,qMode);
@@ -90,10 +90,10 @@ public class QuizController {
 	@RequestMapping("/quiz/open")
 	public String quizOpen(Model model, @RequestParam("id") long id,
 			@RequestParam(value = "mode", required=false, defaultValue="fromPolish") String mode,
-			@RequestParam(value = "number") Integer number) {
+			@RequestParam(value = "number") int number) {
 		
 		Dictionary dictionary = dictionaryRepository.findOne(id);
-		List<Word> words = new LinkedList<Word>();
+		List<Word> words = new ArrayList<Word>();
 		words.addAll(dictionary.getWords());
 		QuizMode qMode = QuizMode.valueOf(mode);
 		List<Question> questions = Question.getQuerySet(words,number,qMode);

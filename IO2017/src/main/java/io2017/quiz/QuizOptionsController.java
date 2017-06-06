@@ -1,6 +1,6 @@
 package io2017.quiz;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class QuizOptionsController {
 	public String quizOptions(Model model, @RequestParam("id") long id) {
 			
 		Dictionary dictionary = dictionaryRepository.findOne(id);
-		List<Word> words = new LinkedList<Word>();
+		List<Word> words = new ArrayList<Word>();
 		words.addAll(dictionary.getWords());
 		model.addAttribute("wordsNumber", words.size());
 		model.addAttribute("dictionaryLanguage", dictionary.getLanguage());
